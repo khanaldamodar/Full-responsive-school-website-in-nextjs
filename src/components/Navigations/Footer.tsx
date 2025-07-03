@@ -1,8 +1,6 @@
-'use client';
-
-import React from 'react';
-import Heading from '../global/Heading'; // adjust the path if needed
-import { Mail, MapPin, Phone } from 'lucide-react';
+"use client";
+import React from "react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -15,7 +13,9 @@ const Footer = () => {
             {/* <Heading title="About Us" icon={null} /> */}
             <h1 className="text-xl font-semibold">About Us</h1>
             <p className="text-sm mt-4 leading-relaxed">
-              We are dedicated to providing quality education that fosters academic excellence, creativity, and innovation. Join us in shaping the future.
+              We are dedicated to providing quality education that fosters
+              academic excellence, creativity, and innovation. Join us in
+              shaping the future.
             </p>
           </div>
 
@@ -24,11 +24,31 @@ const Footer = () => {
             {/* <Heading title="Quick Links" icon={null} /> */}
             <h1 className="text-xl font-semibold">Quick Links</h1>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a href="#" className="hover:underline">Home</a></li>
-              <li><a href="#" className="hover:underline">Courses</a></li>
-              <li><a href="#" className="hover:underline">Admissions</a></li>
-              <li><a href="#" className="hover:underline">Gallery</a></li>
-              <li><a href="#" className="hover:underline">Contact Us</a></li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Courses
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Admissions
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Gallery
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Contact Us
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -55,7 +75,9 @@ const Footer = () => {
           <div>
             {/* <Heading title="Subscribe" icon={null} /> */}
             <h1 className="text-xl font-semibold">Subscribe</h1>
-            <p className="text-sm mt-4 mb-3">Get updates on our latest news and programs.</p>
+            <p className="text-sm mt-4 mb-3">
+              Get updates on our latest news and programs.
+            </p>
             <input
               type="email"
               placeholder="Enter your email"
@@ -69,7 +91,8 @@ const Footer = () => {
 
         {/* Bottom Line */}
         <div className="text-center text-sm border-t border-white/30 pt-4">
-          &copy; {new Date().getFullYear()} Your School Name. All rights reserved.
+          &copy; {new Date().getFullYear()} ShaktaTechnology. All rights
+          reserved.
         </div>
       </div>
     </footer>

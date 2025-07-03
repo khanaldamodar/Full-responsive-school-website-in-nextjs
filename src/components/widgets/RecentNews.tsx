@@ -8,32 +8,25 @@ const newsData = [
     id: 1,
     title: '1st International Conference 2025 Successfully Complete',
     subtitle: 'पहिलो अन्तर्राष्ट्रिय सम्मेलन सफलतापूर्वक सम्पन्न...',
-    image: '/news/conference.jpg',
+    image: '/images/widgets/baner.jpg',
     date: 'Jan 23, 2025',
-  },
-  {
-    id: 2,
-    title:
-      'स्नातक तह चौथो वर्ष, छैटौं र आठौं सेमेस्टर को त्रैमासिक परीक्षा समय तालिका',
-    image: '/news/no-image.png',
-    date: 'Feb 16, 2023',
   },
   {
     id: 3,
     title: 'Parents Day',
-    image: '/news/event.jpg',
+    image: '/images/widgets/baner.jpg',
     date: 'Feb 16, 2023',
   },
   {
     id: 4,
     title: 'Annual Function',
-    image: '/news/event.jpg',
+    image: '/images/widgets/baner.jpg',
     date: 'Feb 16, 2023',
   },
   {
     id: 5,
     title: 'College Day',
-    image: '/news/no-image.png',
+    image: '/images/widgets/baner.jpg',
     date: 'Feb 16, 2023',
   },
 ]

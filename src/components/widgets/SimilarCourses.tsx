@@ -31,12 +31,12 @@ const newsData = [
   },
 ]
 
-const RecentBlogs = () => {
+const SimilarCourses = () => {
   return (
     <div className="bg-white rounded shadow-md overflow-hidden w-full">
       <div className="bg-[#0949A3] px-4 py-3">
         <h2 className="text-white font-bold text-lg font-poppins">
-          Recent Blogs
+         Similar Courses
         </h2>
       </div>
       <div className="divide-y px-4 py-2">
@@ -71,4 +71,4 @@ const RecentBlogs = () => {
   )
 }
 
-export default RecentBlogs
+export default SimilarCourses
