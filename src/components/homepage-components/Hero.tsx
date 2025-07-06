@@ -5,52 +5,42 @@ import { IoBookSharp } from "react-icons/io5";
 import { SiSemanticscholar } from "react-icons/si";
 
 const Hero = () => {
+  const features = [
+    {
+      title: "Quality Education",
+      description: "We provide top-notch education with experienced teachers.",
+      icon: <SiSemanticscholar />,
+    },
+    {
+      title: "Extracurricular Activities",
+      description: "We encourage students to participate in various extracurricular activities.",
+      icon: <GiSchoolBag />,
+    },
+    {
+      title: "Modern Facilities",
+      description: "Our school is equipped with modern facilities to enhance learning.",
+      icon: <IoBookSharp />,
+    },
+  ];
 
-    const features= [
-        {
-            title: "Quality Education",
-            description: "We provide top-notch education with experienced teachers.",
-            icon: <SiSemanticscholar />
-
-        },
-        {
-            title: "Extracurricular Activities",
-            description: "We encourage students to participate in various extracurricular activities.",
-            icon: <GiSchoolBag />
-
-        },
-        {
-            title: "Modern Facilities",
-            description: "Our school is equipped with modern facilities to enhance learning.",
-            icon: <IoBookSharp />
-
-        }
-    ]
   return (
-    <div className="font-poppins h-[100vh] bg-[#fafafa] py-20">
+    <div className="font-poppins bg-[#fafafa] pt-20">
+      {/* Top section */}
+      <div className="container mx-auto flex flex-col-reverse lg:flex-row items-center justify-between gap-10 px-4 sm:px-6 lg:px-0">
+        {/* Left Text Section */}
+        <div className="flex flex-col items-center lg:items-start text-center lg:text-left gap-5 lg:gap-8 w-full lg:w-1/2">
+          <h2 className="text-blue-500 font-semibold text-sm sm:text-base">JOIN US</h2>
 
-        {/* Top section  */}
-      <div className="container mx-auto flex items-center justify-center h-full">
-        <div className="flex flex-col items-center justify-center text-center gap-10">
-          {/* For small Head  */}
-          <div className="self-start">
-            <h1 className="text-blue-500 font-semibold">JOIN US</h1>
-          </div>
+          <h1 className="text-blue-500 font-bold text-3xl sm:text-4xl md:text-5xl leading-tight">
+            25K+ STUDENTS TRUST US
+          </h1>
 
-          {/* Main Heading */}
-          <div>
-            <h1 className="text-blue-500 font-bold text-4xl md:text-5xl text-nowrap ">
-              25K+ STUDENTS TRUST US
-            </h1>
-          </div>
-          <div>
-            <p className="text-gray-600 mt-4 text-lg md:text-xl lg:text-2xl xl:text-2xl max-w-2xl font-semibold">
-              Every day brings with it a fresh set of learning possibilities.
-            </p>
-          </div>
+          <p className="text-gray-600 text-base sm:text-lg lg:text-xl font-medium max-w-xl">
+            Every day brings with it a fresh set of learning possibilities.
+          </p>
 
-          {/* Buttons  */}
-          <div className="flex gap-4 mt-8">
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
             <button className="bg-[#0070f3] text-white px-6 py-2 rounded-lg hover:bg-[#005bb5] transition duration-300">
               Get Started
             </button>
@@ -60,32 +50,30 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDE WITH THE IMAGE */}
-        <div className="relative h-full w-full">
-            <Image
-            fill
-            alt="Hero Image"
+        {/* Right Image Section */}
+        <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] lg:w-1/2">
+          <Image
             src="/images/heropage/placeholder.png"
-            className="object-contain "
-            />
-
+            alt="Hero Image"
+            fill
+            className="object-contain"
+          />
         </div>
       </div>
 
-      {/* Bottom Sectio With School Features */}
-
-      <div className="relative -top-20 container mx-auto mt-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 my-20">
+      {/* Bottom Features Section */}
+      <div className="container mx-auto mt-16 lg:mt-24 px-4 sm:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-xl transition-shadow duration-300">
-              {feature.icon && (
-                <div className="flex items-center justify-center text-4xl text-white bg-blue-500 mb-4 w-20 h-20 rounded-full">
-                  {feature.icon}
-                </div>
-              )}
-              
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
+            <div
+              key={index}
+              className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 text-center"
+            >
+              <div className="flex items-center justify-center mb-4 w-20 h-20 rounded-full bg-blue-500 text-white text-4xl mx-auto">
+                {feature.icon}
+              </div>
+              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+              <p className="text-gray-600 text-sm sm:text-base">{feature.description}</p>
             </div>
           ))}
         </div>

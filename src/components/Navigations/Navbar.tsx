@@ -32,10 +32,10 @@ const Navbar = () => {
       name: "Events",
       path: "/events",
     },
-    {
-      name: "News",
-      path: "/news",
-    },
+    // {
+    //   name: "News",
+    //   path: "/news",
+    // },
     {
       name: "Gallery",
       path: "/gallery",

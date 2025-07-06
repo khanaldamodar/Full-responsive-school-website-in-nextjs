@@ -3,10 +3,10 @@ import IndividualNoticeCard from '@/components/otherComponents/IndividualNoticeC
 import Banner from '@/components/widgets/Banner'
 import React from 'react'
 
-const DummyNotices = [
+export const DummyNotices = [
     {
         id: 1,
-        title: 'Notice 1',
+        title: 'This is Notice 1 of Dummy Notices',
         date: 'Jan 23, 2025',
         image: '/images/widgets/baner.jpg',
     },
