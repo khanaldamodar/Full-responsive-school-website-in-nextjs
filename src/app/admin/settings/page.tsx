@@ -1,10 +1,23 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import useEdit from '@/services/useEdit';
+
+interface SchoolData {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  description: string;
+  logo: string | null;
+  school_start_time: string | null;
+}
 
 export default function SettingsPage() {
-  const [logo, setLogo] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
+  const [logo, setLogo] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     schoolName: '',
     address: '',
@@ -12,30 +25,74 @@ export default function SettingsPage() {
     phone: '',
     about: '',
     openingTime: '',
-  })
+  });
+
+  const { data, loading, error, updateData } = useEdit<SchoolData>({
+    endpoint: `http://127.0.0.1:8000/api/school-information/2`, // Assuming ID=2
+  });
+
+  // Fetch school info on mount
+  useEffect(() => {
+    const fetchSchoolInfo = async () => {
+      try {
+        const res = await axios.get('http://127.0.0.1:8000/api/school-information');
+        const school = res.data.data[0]; // assuming the first item is the target
+
+        setFormData({
+          schoolName: school.name || '',
+          address: school.address || '',
+          email: school.email || '',
+          phone: school.phone || '',
+          about: school.description || '',
+          openingTime: school.school_start_time || '',
+        });
+
+        if (school.logo) {
+          setPreview(`http://127.0.0.1:8000/storage/${school.logo}`); // Adjust if needed
+        }
+      } catch (err) {
+        console.error('Error fetching school info:', err);
+      }
+    };
+
+    fetchSchoolInfo();
+  }, []);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      setLogo(file)
-      setPreview(URL.createObjectURL(file))
+      setLogo(file);
+      setPreview(URL.createObjectURL(file));
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log({ ...formData, logo })
-    alert('Settings saved (console logged)')
-    // You can call an API or upload logic here
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const updatedPayload = {
+      name: formData.schoolName,
+      address: formData.address,
+      phone: formData.phone,
+      email: formData.email,
+      description: formData.about,
+      school_start_time: formData.openingTime,
+    };
+
+    await updateData(updatedPayload);
+
+    alert('Settings updated successfully!');
+  };
 
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-md p-6 mt-8 rounded-lg font-poppins">
       <h1 className="text-3xl font-bold mb-6 text-[#0949A3]">School Settings</h1>
+
+      {loading && <p className="text-blue-500">Updating...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Logo Upload */}
@@ -43,7 +100,11 @@ export default function SettingsPage() {
           <label className="block text-sm font-medium text-gray-700">School Logo</label>
           <div className="mt-2 flex items-center gap-4">
             {preview ? (
-              <img src={preview} alt="Logo preview" className="h-16 w-16 rounded-full object-cover" />
+              <img
+                src={preview}
+                alt="Logo preview"
+                className="h-16 w-16 rounded-full object-cover"
+              />
             ) : (
               <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
                 No Logo
@@ -127,7 +188,7 @@ export default function SettingsPage() {
             value={formData.openingTime}
             onChange={handleChange}
             className="mt-1 w-full border rounded-md p-2"
-            required
+            
           />
         </div>
 
@@ -140,5 +201,5 @@ export default function SettingsPage() {
         </button>
       </form>
     </div>
-  )
+  );
 }

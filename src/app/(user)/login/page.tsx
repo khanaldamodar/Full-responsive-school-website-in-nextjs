@@ -1,15 +1,55 @@
 "use client";
 import React, { useState } from "react";
-
+import Cookies from "js-cookie";
+import axios from "axios";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  // import Cookies from "js-cookie";
+
+  // Inside your component
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+    if (!email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    const existingToken = Cookies.get("token");
+
+    if (existingToken) {
+      alert("You are already logged in.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/login", {
+        email,
+        password,
+      });
+
+      console.log("Login response:", response);
+
+      const token = response.data.token;
+
+      if (token) {
+        Cookies.set("token", token, { expires: 1 }); // store token for 7 days
+        alert("Login successful!");
+
+        // Optional: store user info if needed
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        // Redirect
+        window.location.href = "/admin/dashboard";
+      } else {
+        alert("Login failed. Token not received.");
+      }
+    } catch (err) {
+      console.error("Login failed:", err);
+      alert("Invalid credentials or server error.");
+    }
   };
 
   return (
@@ -53,7 +93,7 @@ const Login = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               placeholder="Enter your password"
             />
-          </div>
+          </div> 
 
           <button
             type="submit"
@@ -66,5 +106,6 @@ const Login = () => {
     </div>
   );
 };
+
 
 export default Login;
