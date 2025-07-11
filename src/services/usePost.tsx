@@ -20,6 +20,10 @@ export function usePost<T = unknown>() {
     try {
       const token = Cookies.get("token"); // Sanctum token stored in cookies
 
+      await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie", {
+        withCredentials: true,
+      })
+
       const res = await axios.post<T>(url, payload, {
         headers: {
           Authorization: `Bearer ${token}`,

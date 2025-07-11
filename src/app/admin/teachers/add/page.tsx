@@ -76,7 +76,7 @@ export default function AddTeacherPage() {
               <img src={preview} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
             ) : (
               <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
-                No Photo
+                <p className='text-center'>No Photo</p>
               </div>
             )}
             <input type="file" accept="image/*" onChange={handlePhotoChange} />
