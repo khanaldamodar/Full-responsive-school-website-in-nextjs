@@ -181,7 +181,7 @@ const page = () => {
                               alt={item.title}
                               className="w-16 h-16 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-200"
                               onError={(e) => {
-                                e.currentTarget.src = '/default.jpg'
+                                e.currentTarget.src = 'https://via.placeholder.com/64?text=No+Image'
                               }}
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 rounded-lg transition-all duration-200 flex items-center justify-center">

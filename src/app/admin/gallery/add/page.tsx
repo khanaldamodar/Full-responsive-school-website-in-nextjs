@@ -1,11 +1,15 @@
 'use client'
 
+import { usePost } from '@/services/usePost'
 import React, { useState } from 'react'
 
+
 export default function AddImagePage() {
+  const { post, loading, error } = usePost()
   const [image, setImage] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -15,11 +19,32 @@ export default function AddImagePage() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({ title, image })
-    alert('Image added (check console)')
-    // Send this data to your backend or API route
+
+    if (!image) {
+      alert('Please select an image')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('title', title)
+    formData.append('description', description)
+    formData.append('image', image)
+
+    try {
+      const res = await post('http://127.0.0.1:8000/api/gallery', formData)
+      alert('Image uploaded successfully!')
+      console.log(res)
+    } catch (err: any) {
+      if (err.response?.status === 422) {
+        console.error('Validation errors:', err.response.data.errors)
+        alert('Validation failed. Check console for details.')
+      } else {
+        console.error('Upload error:', err)
+        alert('Something went wrong. Check console.')
+      }
+    }
   }
 
   return (
@@ -38,6 +63,19 @@ export default function AddImagePage() {
             required
             className="w-full border border-gray-300 rounded-md p-2"
             placeholder="e.g. Annual Function 2025"
+          />
+        </div>
+
+        {/* Description (optional) */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description (optional)</label>
+          <textarea
+            name="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border border-gray-300 rounded-md p-2"
+            placeholder="Short description"
+            rows={3}
           />
         </div>
 
@@ -64,11 +102,14 @@ export default function AddImagePage() {
         <div className="text-right">
           <button
             type="submit"
+            disabled={loading}
             className="bg-[#0949A3] text-white px-6 py-2 rounded-md hover:bg-blue-800 transition"
           >
-            Upload Image
+            {loading ? 'Uploading...' : 'Upload Image'}
           </button>
         </div>
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
       </form>
     </div>
   )
