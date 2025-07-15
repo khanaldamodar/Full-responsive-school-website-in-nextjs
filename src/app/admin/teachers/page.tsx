@@ -130,7 +130,7 @@ export default function TeachersPage() {
                         src={
                           teacher.profile_picture
                             ? `http://127.0.0.1:8000/storage/${teacher.profile_picture.replace(/^.*[\\/]/, '')}`
-                            : '/default.jpg'
+                            : ''
                         }
                         alt={teacher.name}
                         className="w-14 h-14 object-cover rounded"

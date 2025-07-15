@@ -51,7 +51,7 @@ const Navbar = () => {
   ];
 
   const handleContactButton = () => {
-    router.push("/contact");
+    router.push("/admission");
   };
 
   const handleMenuClick = (item) => {

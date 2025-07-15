@@ -47,7 +47,7 @@ const page = () => {
                       alt={item.title}
                       className="w-16 h-16 object-cover rounded"
                       onError={(e) => {
-                        e.currentTarget.src = '/default.jpg'
+                        e.currentTarget.src = ''
                       }}
                     />
                   </td>

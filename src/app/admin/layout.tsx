@@ -3,6 +3,12 @@ import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "../globals.css";
 import Sidebar from "@/components/admin-components/Sidebar";
 import ClientAuthGuard from "@/components/admin-components/ClientAuthGuard";
+import { Metadata } from "next";
+
+export const metadata = {
+  title: 'Admin Panel',
+  description: 'Learn more about our team and mission.',
+}
 
 
 const geistSans = Geist({

@@ -1,55 +1,54 @@
-import React from "react";
-import RecentNews from "../widgets/RecentNews";
+'use client'
 
-const About = () => {
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+
+export default function About() {
+  const [description, setDescription] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const schoolId = 2 // or fetch from config if dynamic
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8000/api/school-information/${schoolId}`)
+        setDescription(res.data?.data.description || '')
+        console.log(res.data.data.description)
+      } catch (err) {
+        setError('Failed to load school information.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [schoolId])
+
   return (
-    <div className="font-poppins ">
-      <div className="mx-40">
+    <div className="font-poppins">
+      <div className="mx-4 md:mx-40 my-10">
         <p className="text-[18px] text-justify">
           "<span className="text-[#0949A3] font-bold text-2xl">Our vision</span>{" "}
-          - To develop JMC as a deemed university by making it a center of
+          - To develop this School as a deemed university by making it a center of
           academic excellence for meeting the emerging challenges of
           modernization and globalization”
         </p>
+
         <br />
         <br />
-        <p className="text-[18px] text-justify">
-          XYZ School was established in 1991 AD through the initiative of
-          academicians, intellectuals, and social workers residing in the
-          Kuleshwor area. For over three decades, the institution has been
-          providing exceptional educational services, distinguishing itself as a
-          pioneering academic establishment. In its ongoing pursuit of quality
-          enhancement, the school achieved a significant milestone by receiving
-          formal Quality Assurance and Accreditation certification from the
-          University Grants Commission. As the first QAA-certified institution
-          in the Kathmandu Valley, XYZ School has been accelerating its progress
-          with the support, guidance, and supervision of the UGC, along with the
-          active participation of its esteemed stakeholders.
-          <br /> <br />
-          As a non-profit community institution, XYZ School is dedicated to
-          serving the people, society, and the nation by delivering quality
-          education. Notable features of the school include a conducive academic
-          environment, mutual understanding, high regard for social values, and
-          practice-based learning. Despite modest initial investments, the
-          school has maintained high educational standards due to the dedication
-          and commitment of its students, faculty members, and management. Since
-          its establishment, XYZ School has promoted inclusive education by
-          offering scholarships to socially marginalized, economically
-          disadvantaged, differently-abled, and meritorious students.
-          <br /> <br />
-          The institution prioritizes the optimal use of available resources to
-          foster academic excellence. Over the years, XYZ School has acquired
-          approximately 2,200 square meters of land and constructed a four-story
-          building equipped with modern learning facilities. The expansion of
-          physical infrastructure has been made possible through the continuous
-          support of the UGC, as well as contributions from the management
-          committee, faculty, and non-teaching staff. The school’s overarching
-          vision is to evolve into a deemed university in the foreseeable
-          future, guiding its mission and growth.
-        </p>
+
+        {loading ? (
+          <p className="text-gray-500">Loading school information...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <p className="text-[18px] text-justify whitespace-pre-line">
+            {description}
+          </p>
+        )}
       </div>
     </div>
-  );
-};
-
-export default About;
+  )
+}

@@ -21,6 +21,7 @@ const page = () => {
   const { data, loading, error } = useFetch<GalleryResponse>('http://127.0.0.1:8000/api/gallery')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedItems, setSelectedItems] = useState<number[]>([])
+  
 
   const handleView = (id: number) => {
     console.log('View item:', id)

@@ -120,7 +120,7 @@ export default function EventsPage() {
                         alt={event.title}
                         className="w-14 h-14 object-cover rounded"
                         onError={(e) => {
-                          e.currentTarget.src = '/default.jpg'
+                          e.currentTarget.src = ''
                         }}
                       />
                     </td>
