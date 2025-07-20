@@ -1,54 +1,101 @@
-'use client'
+"use client";
 
-import { useFetch } from '@/services/useFetch'
-import { Eye, Edit, Trash2, Plus, Search, Filter } from 'lucide-react'
-import { useState } from 'react'
+import { useFetch } from "@/services/useFetch";
+import axios from "axios";
+import { Eye, Edit, Trash2, Plus, Search, Filter } from "lucide-react";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 interface Subject {
-  id: number
-  name: string
-  code: string
+  id: number;
+  name: string;
+  code: string;
 }
 
 interface Teacher {
-  id: number
-  name: string
-  email: string
-  phone: string
-  address: string
-  qualification: string
-  bio: string
-  profile_picture: string | null
-  subjects: Subject[]
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  qualification: string;
+  bio: string;
+  profile_picture: string | null;
+  subjects: Subject[];
 }
 
 interface TeacherResponse {
-  status: boolean
-  data: Teacher[]
+  status: boolean;
+  data: Teacher[];
 }
 
 export default function TeachersPage() {
+  const [localData, setLocalData] = useState<Teacher[] | null>(null)
   const { data, loading, error } = useFetch<TeacherResponse>('http://127.0.0.1:8000/api/teachers')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedItems, setSelectedItems] = useState<number[]>([])
+  
+// On first load, sync fetched data into local state
+useEffect(() => {
+  if (data?.data && !localData) {
+    setLocalData(data.data)
+  }
+}, [data])
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked && data?.data) {
-      setSelectedItems(data.data.map(item => item.id))
+      setSelectedItems(data.data.map((item) => item.id));
     } else {
-      setSelectedItems([])
+      setSelectedItems([]);
     }
-  }
+  };
+
+
 
   const handleSelectItem = (id: number, checked: boolean) => {
-    setSelectedItems(checked ? [...selectedItems, id] : selectedItems.filter(i => i !== id))
-  }
+    setSelectedItems(
+      checked ? [...selectedItems, id] : selectedItems.filter((i) => i !== id)
+    );
+  };
 
-  const filteredData = data?.data?.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.subjects.some(sub => sub.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
+  const filteredData = localData?.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.subjects.some((sub) =>
+        sub.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+  );
+
+
+
+  const handleDelete = async (id: number) => {
+  const confirmDelete = confirm('Are you sure you want to delete this teacher?')
+
+  if (!confirmDelete) return
+
+  try {
+    const token = Cookies.get('token');
+
+    await axios.delete(`http://127.0.0.1:8000/api/teachers/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    // Remove deleted teacher from local state
+    if (data) {
+      const updated = data.data.filter(t => t.id !== id)
+      setSelectedItems(prev => prev.filter(item => item !== id))
+      setLocalData({ ...data, data: updated }) // Update local state
+    }
+  } catch (err) {
+    console.error('Failed to delete teacher:', err)
+    alert('Failed to delete teacher. Please try again.')
+  }
+}
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen font-poppins">
@@ -57,7 +104,9 @@ export default function TeachersPage() {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">Teachers</h1>
-            <p className="text-gray-600">List of all teachers with assigned subjects</p>
+            <p className="text-gray-600">
+              List of all teachers with assigned subjects
+            </p>
           </div>
           <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
             <Plus className="w-5 h-5" />
@@ -86,7 +135,9 @@ export default function TeachersPage() {
         {/* Table */}
         <div className="bg-white rounded-lg shadow overflow-x-auto">
           {loading ? (
-            <div className="p-6 text-center text-gray-600">Loading teachers...</div>
+            <div className="p-6 text-center text-gray-600">
+              Loading teachers...
+            </div>
           ) : error ? (
             <div className="p-6 text-center text-red-500">Error: {error}</div>
           ) : filteredData && filteredData.length > 0 ? (
@@ -115,13 +166,17 @@ export default function TeachersPage() {
                 {filteredData.map((teacher, index) => (
                   <tr
                     key={teacher.id}
-                    className={`hover:bg-gray-50 ${selectedItems.includes(teacher.id) ? 'bg-blue-50' : ''}`}
+                    className={`hover:bg-gray-50 ${
+                      selectedItems.includes(teacher.id) ? "bg-blue-50" : ""
+                    }`}
                   >
                     <td className="px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selectedItems.includes(teacher.id)}
-                        onChange={(e) => handleSelectItem(teacher.id, e.target.checked)}
+                        onChange={(e) =>
+                          handleSelectItem(teacher.id, e.target.checked)
+                        }
                       />
                     </td>
                     <td className="px-4 py-3 font-medium">{index + 1}</td>
@@ -129,8 +184,11 @@ export default function TeachersPage() {
                       <img
                         src={
                           teacher.profile_picture
-                            ? `http://127.0.0.1:8000/storage/${teacher.profile_picture.replace(/^.*[\\/]/, '')}`
-                            : ''
+                            ? `http://127.0.0.1:8000/storage/teachers/profile_pictures/${teacher.profile_picture.replace(
+                                /^.*[\\/]/,
+                                ""
+                              )}`
+                            : ""
                         }
                         alt={teacher.name}
                         className="w-14 h-14 object-cover rounded"
@@ -152,13 +210,23 @@ export default function TeachersPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        <button className="text-blue-600 hover:text-blue-800" title="View">
+                        <button
+                          className="text-blue-600 hover:text-blue-800"
+                          title="View"
+                        >
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button className="text-green-600 hover:text-green-800" title="Edit">
+                        <button
+                          className="text-green-600 hover:text-green-800"
+                          title="Edit"
+                        >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-800" title="Delete">
+                        <button
+                          className="text-red-600 hover:text-red-800"
+                          title="Delete"
+                          onClick={() => handleDelete(teacher.id)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -168,10 +236,12 @@ export default function TeachersPage() {
               </tbody>
             </table>
           ) : (
-            <div className="p-6 text-center text-gray-500">No teachers found.</div>
+            <div className="p-6 text-center text-gray-500">
+              No teachers found.
+            </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

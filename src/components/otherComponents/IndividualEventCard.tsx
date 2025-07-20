@@ -25,6 +25,8 @@ const IndividualEventCard = ({
   const router = useRouter()
   const slug = generateSlug(title)
 
+  console.log(image)
+
   const handleClick = () => {
     router.push(`/events/${slug}`)
   }
@@ -39,6 +41,7 @@ const IndividualEventCard = ({
           src={image}
           alt={title}
           fill
+          unoptimized
           layout="fill"
           objectFit="cover"
           className="transition-transform duration-300"

@@ -1,29 +1,43 @@
-'use client'
+'use client';
 import IndividualEventCard from "@/components/otherComponents/IndividualEventCard";
 import Banner from "@/components/widgets/Banner";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 
-const page = () => {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Define the structure of an individual event
+interface Event {
+  id: number;
+  title: string;
+  description: string;
+  location: string;
+  image: string;
+  event_date: string;
+}
+
+// Define the expected response from the API
+interface EventApiResponse {
+  status: boolean;
+  data: Event[];
+}
+
+const EventsPage: React.FC = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const result = await axios.get('http://127.0.0.1:8000/api/events'); // Replace with your actual API endpoint
-        
-        if (result.data.status && result.data) {
+        const result = await axios.get<EventApiResponse>("http://127.0.0.1:8000/api/events");
+
+        if (result.data.status && result.data.data) {
           setEvents(result.data.data);
-          console.log(result.data.data)
-          console.log(dayjs(result.data.data.event_date).format('YYYY-MM-DD'))
         } else {
-          setError('Failed to fetch events');
+          setError("Failed to fetch events");
         }
-      } catch (err) {
-        setError('Error fetching events: ' + err.message);
+      } catch (err: any) {
+        setError("Error fetching events: " + err.message);
       } finally {
         setLoading(false);
       }
@@ -58,15 +72,15 @@ const page = () => {
     <div className="py-10 font-poppins">
       <Banner title="Events" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-30">
-        {events && events.length > 0 ? (
+        {events.length > 0 ? (
           events.map((event) => (
             <IndividualEventCard
+              key={event.id}
               title={event.title}
-              date={dayjs(event.event_date).format('YYYY-MM-DD')}
+              date={dayjs(event.event_date).format("YYYY-MM-DD")}
               description={event.description}
               location={event.location}
-              image={`/`}
-              key={event.id}
+              image={`http://127.0.0.1:8000/storage/${event.image}`}
             />
           ))
         ) : (
@@ -79,4 +93,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default EventsPage;

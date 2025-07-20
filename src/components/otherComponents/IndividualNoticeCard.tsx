@@ -22,6 +22,7 @@ const IndividualNoticeCard: React.FC<NoticeCardProps> = ({ image, title, date })
           <Image
             src={image}
             alt={title}
+            unoptimized
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />

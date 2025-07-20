@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+    domains:['localhost','127.0.0.1:8000']
   },
 };
 

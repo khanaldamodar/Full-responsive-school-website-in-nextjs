@@ -1,25 +1,57 @@
+"use client";
 import ContactCard from "@/components/contactpage-components/ContactCard";
 import ContactForm from "@/components/contactpage-components/ContactForm";
 import Map from "@/components/contactpage-components/Map";
 import Banner from "@/components/widgets/Banner";
 import { Clock9, MailMinus, MapPinHouse, PhoneCall } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+type SchoolInfo = {
+  address: string;
+  phone: string;
+  email: string;
+};
 
 const page = () => {
+  const [schoolInfo, setSchoolInfo] = useState<SchoolInfo>({
+    address: "",
+    phone: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    const fetchSchoolInfo = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/school-information/3"
+        );
+        const data = await response.json();
+
+        if (data.status && data.data) {
+          const { address, phone, email } = data.data;
+          setSchoolInfo({ address, phone, email });
+        }
+      } catch (error) {
+        console.error("Error fetching school info:", error);
+      }
+    };
+
+    fetchSchoolInfo();
+  }, []);
   const contactDetails = [
     {
       title: "Address",
-      detail: "Kuleshwor, Kathmandu, Nepal",
+      detail: schoolInfo.address,
       icon: <MapPinHouse size={35} />,
     },
     {
       title: "Phone",
-      detail: "+977 1-1234567",
+      detail: schoolInfo.phone,
       icon: <PhoneCall size={35} />,
     },
     {
       title: "Email",
-      detail: "shaktatechnology@gmail.com",
+      detail: schoolInfo.email,
       icon: <MailMinus size={35} />,
     },
     {
@@ -45,12 +77,9 @@ const page = () => {
       </div>
 
       {/* Contact form and Map */}
-      <div className="flex flex-col md:flex-row items-start justify-center md:gap-20">
-        <ContactForm/>
-        <Map/>
-
-        
-
+      <div className="flex flex-col md:flex-row items-start justify-center md:gap-20 md:px-30">
+        <ContactForm />
+        <Map />
       </div>
     </div>
   );

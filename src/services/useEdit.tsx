@@ -1,4 +1,3 @@
-// hooks/useEdit.ts
 import { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -12,7 +11,7 @@ interface EditResponse<T> {
   data: T | null;
   loading: boolean;
   error: string | null;
-  updateData: (updatedData: Partial<T>) => Promise<void>;
+  updateData: (updatedData: Partial<T> | FormData, isFormData?: boolean) => Promise<void>;
 }
 
 function useEdit<T>({ endpoint, initialData }: UseEditOptions<T>): EditResponse<T> {
@@ -20,7 +19,7 @@ function useEdit<T>({ endpoint, initialData }: UseEditOptions<T>): EditResponse<
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const updateData = async (updatedData: Partial<T>) => {
+  const updateData = async (updatedData: Partial<T> | FormData, isFormData = false) => {
     const token = Cookies.get("token");
 
     if (!token) {
@@ -32,15 +31,18 @@ function useEdit<T>({ endpoint, initialData }: UseEditOptions<T>): EditResponse<
       setLoading(true);
       setError(null);
 
-      const response = await axios.put<T>(
-        endpoint,
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (!isFormData) {
+        headers["Content-Type"] = "application/json";
+      }
+
+      const response = await axios.post<T>(
+        `${endpoint}?_method=PUT`,
         updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
+        { headers }
       );
 
       setData(response.data);

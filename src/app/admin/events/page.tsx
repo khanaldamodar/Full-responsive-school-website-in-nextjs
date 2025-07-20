@@ -1,8 +1,10 @@
 'use client'
 
 import { useFetch } from '@/services/useFetch'
+import axios from 'axios'
 import { Eye, Edit, Trash2, Plus, Search, Filter } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
 
 interface EventItem {
   id: number
@@ -22,6 +24,8 @@ interface EventResponse {
 }
 
 export default function EventsPage() {
+  const [localEvents, setLocalEvents] = useState<EventItem[] | null>(null)
+
   const { data, loading, error } = useFetch<EventResponse>('http://127.0.0.1:8000/api/events')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedItems, setSelectedItems] = useState<number[]>([])
@@ -34,11 +38,39 @@ export default function EventsPage() {
     }
   }
 
+  useEffect(() => {
+  if (data?.data && !localEvents) {
+    setLocalEvents(data.data)
+  }
+}, [data])
+
+const handleDelete = async (id: number) => {
+  const confirmDelete = confirm('Are you sure you want to delete this event?')
+  if (!confirmDelete) return
+
+  try {
+    const token = Cookies.get('token')
+
+    await axios.delete(`http://127.0.0.1:8000/api/events/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    setLocalEvents(prev => prev?.filter(event => event.id !== id) || [])
+    setSelectedItems(prev => prev.filter(item => item !== id))
+  } catch (err) {
+    console.error('Failed to delete event:', err)
+    alert('Failed to delete event. Please try again.')
+  }
+}
+
+
   const handleSelectItem = (id: number, checked: boolean) => {
     setSelectedItems(checked ? [...selectedItems, id] : selectedItems.filter(i => i !== id))
   }
 
-  const filteredData = data?.data?.filter(item =>
+  const filteredData = localEvents?.filter(item =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.organizer.toLowerCase().includes(searchTerm.toLowerCase())
@@ -116,12 +148,12 @@ export default function EventsPage() {
                     <td className="px-4 py-3 font-medium">{index + 1}</td>
                     <td className="px-4 py-3">
                       <img
-                        src={`http://127.0.0.1:8000/storage/${event.image.replace(/^.*[\\/]/, '')}`}
+                        src={`http://127.0.0.1:8000/storage/events/${event.image.replace(/^.*[\\/]/, '')}`}
                         alt={event.title}
                         className="w-14 h-14 object-cover rounded"
-                        onError={(e) => {
-                          e.currentTarget.src = ''
-                        }}
+                        // onError={(e) => {
+                        //   e.currentTarget.src = ''
+                        // }}
                       />
                     </td>
                     <td className="px-4 py-3">{event.title}</td>
@@ -152,7 +184,7 @@ export default function EventsPage() {
                         <button
                           className="text-red-600 hover:text-red-800"
                           title="Delete"
-                          onClick={() => console.log('Delete', event.id)}
+                          onClick={() => handleDelete(event.id)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

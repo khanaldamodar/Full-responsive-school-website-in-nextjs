@@ -3,73 +3,55 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import { FaHandHoldingWater } from "react-icons/fa";
-import { LiaVideoSolid } from "react-icons/lia";
-import { IoNewspaperOutline } from "react-icons/io5";
-import { FaPeopleGroup } from "react-icons/fa6";
 
 const Navbar = () => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [hoveredMenu, setHoveredMenu] = useState(null);
+  const [hoveredMenu, setHoveredMenu] = useState<number | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   const menuItems = [
-    {
-      name: "Home",
-      path: "/",
-    },
-    {
-      name: "About Us",
-      path: "/about",
-    },
-    {
-      name: "Academics",
-      path: "/academics",
-    },
-    {
-      name: "Events",
-      path: "/events",
-    },
-    // {
-    //   name: "News",
-    //   path: "/news",
-    // },
-    {
-      name: "Gallery",
-      path: "/gallery",
-    },
-    {
-      name: "Notices",
-      path: "/notices",
-    },
-    {
-      name: "Contact",
-      path: "/contact",
-    },
+    { name: "Home", path: "/" },
+    { name: "About Us", path: "/about" },
+    { name: "Academics", path: "/academics" },
+    { name: "Events", path: "/events" },
+    { name: "Gallery", path: "/gallery" },
+    { name: "Notices", path: "/notices" },
+    { name: "Contact", path: "/contact" },
   ];
 
   const handleContactButton = () => {
     router.push("/admission");
   };
 
-  const handleMenuClick = (item) => {
-    if (item.subMenus) {
-      // If it has submenus, don't navigate immediately
-      return;
+  const handleMenuClick = (item: any) => {
+    if (!item.subMenus) {
+      router.push(item.path);
     }
-    router.push(item.path);
   };
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/school-information/3");
+        const data = await res.json();
+        if (data?.data?.logo) {
+          setLogoUrl(`http://localhost:8000/${data.data.logo}`);
+        }
+      } catch (err) {
+        console.error("Failed to fetch logo:", err);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false); // scroll down: hide
-      } else {
-        setIsVisible(true); // scroll up: show
-      }
+      setIsVisible(currentScrollY < lastScrollY || currentScrollY < 100);
       setLastScrollY(currentScrollY);
     };
 
@@ -85,25 +67,25 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-4 flex items-center justify-between">
         {/* Logo */}
-        {/* <div
-          className="relative w-32 h-10 cursor-pointer"
-          onClick={() => router.push("/")}
-        >
-          <Image
-            src="/company/logo.png"
-            fill
-            alt="Shakta Technology"
-            className="object-contain filter-blue"
-          />
-          
-        </div> */}
-        <h1 className="font-semibold text-2xl text-blue-500">LOGO</h1>
+        <div className="relative w-42 h-15 cursor-pointer" onClick={() => router.push("/")}>
+          {logoUrl ? (
+            <Image
+              src={logoUrl}
+              fill
+              alt="School Logo"
+              className="object-contain"
+              unoptimized
+            />
+          ) : (
+            <span className="text-gray-400 text-sm">Loading...</span>
+          )}
+        </div>
+
         {/* Desktop Menu */}
         <ul className="hidden md:flex items-center gap-10 uppercase font-medium relative">
           {menuItems.map((item, index) => (
             <li
               key={index}
-              className="relative"
               onMouseEnter={() => item.subMenus && setHoveredMenu(index)}
               onMouseLeave={() => setHoveredMenu(null)}
             >
@@ -113,29 +95,6 @@ const Navbar = () => {
               >
                 {item.name}
               </div>
-              {/* Submenu Dropdown */}
-              {item.subMenus && hoveredMenu === index && (
-                <div
-                  className="absolute top-full left-1/2 transform -translate-x-1/2 w-screen bg-white shadow-lg border-t border-gray-200 "
-                  style={{ height: "20vh" }}
-                  onMouseEnter={() => setHoveredMenu(index)}
-                  onMouseLeave={() => setHoveredMenu(null)}
-                >
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-full flex items-center justify-center">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
-                      {item.subMenus.map((subItem, subIndex) => (
-                        <div
-                          key={subIndex}
-                          onClick={() => router.push(subItem.path)}
-                          className="cursor-pointer gap-3 flex items-center  text-blue-500 hover:text-blue-700 transition-colors duration-200 font-medium text-[18px] normal-case text-center"
-                        >
-                          {subItem.icon} {subItem.name}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
             </li>
           ))}
         </ul>
@@ -146,11 +105,11 @@ const Navbar = () => {
             className="border-2 border-blue-500 rounded-xl px-4 py-2 cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:text-white"
             onClick={handleContactButton}
           >
-            Addmission Open
+            Admission Open
           </button>
         </div>
 
-        {/* Mobile Toggle Button */}
+        {/* Mobile Menu Toggle */}
         <div className="md:hidden">
           <button onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -175,24 +134,6 @@ const Navbar = () => {
                 >
                   {item.name}
                 </div>
-
-                {/* Mobile Submenus */}
-                {item.subMenus && (
-                  <ul className="ml-4 mt-2 space-y-2">
-                    {item.subMenus.map((subItem, subIndex) => (
-                      <li
-                        key={subIndex}
-                        onClick={() => {
-                          setMenuOpen(false);
-                          router.push(subItem.path);
-                        }}
-                        className="cursor-pointer text-blue-500 hover:text-blue-700 transition-colors duration-200 text-xs"
-                      >
-                        {subItem.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </li>
             ))}
             <li>

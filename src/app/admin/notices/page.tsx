@@ -1,31 +1,67 @@
-'use client'
+"use client";
 
-import { useFetch } from '@/services/useFetch'
-import { Edit, Eye, Trash2, Plus } from 'lucide-react'
-import { useState } from 'react'
+import { useFetch } from "@/services/useFetch";
+import { Edit, Eye, Trash2, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 interface Notice {
-  id: number
-  title: string
-  description: string
-  notice_date: string
-  created_at: string
-  updated_at: string
+  id: number;
+  title: string;
+  description: string;
+  notice_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface NoticeResponse {
-  status: boolean
-  data: Notice[] // assuming an array, update if needed
+  status: boolean;
+  data: Notice[]; // assuming an array, update if needed
 }
 
 export default function NoticesPage() {
-  const { data, loading, error } = useFetch<NoticeResponse>('http://127.0.0.1:8000/api/notices')
-  const [searchTerm, setSearchTerm] = useState('')
+  const [localNotices, setLocalNotices] = useState<Notice[] | null>(null);
+  const { data, loading, error } = useFetch<NoticeResponse>(
+    "http://127.0.0.1:8000/api/notices"
+  );
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredNotices = data?.data?.filter((item) =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredNotices = localNotices?.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  useEffect(() => {
+    if (data?.data && !localNotices) {
+      setLocalNotices(data.data);
+    }
+  }, [data]);
+
+  const handleDelete = async (id: number) => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this notice?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const token = Cookies.get("token");
+
+      await axios.delete(`http://127.0.0.1:8000/api/notices/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setLocalNotices(
+        (prev) => prev?.filter((notice) => notice.id !== id) || []
+      );
+    } catch (err) {
+      console.error("Failed to delete notice:", err);
+      alert("Failed to delete notice. Please try again.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 font-poppins">
@@ -56,7 +92,9 @@ export default function NoticesPage() {
         {/* Table */}
         <div className="bg-white rounded-lg shadow overflow-x-auto">
           {loading ? (
-            <div className="text-center py-10 text-blue-600">Loading notices...</div>
+            <div className="text-center py-10 text-blue-600">
+              Loading notices...
+            </div>
           ) : error ? (
             <div className="text-red-500 text-center py-6">{error}</div>
           ) : filteredNotices && filteredNotices.length > 0 ? (
@@ -75,11 +113,13 @@ export default function NoticesPage() {
                 {filteredNotices.map((notice, index) => (
                   <tr
                     key={notice.id}
-                    className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                    className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                   >
                     <td className="px-6 py-3">{index + 1}</td>
                     <td className="px-6 py-3">{notice.title}</td>
-                    <td className="px-6 py-3 truncate max-w-xs">{notice.description}</td>
+                    <td className="px-6 py-3 truncate max-w-xs">
+                      {notice.description}
+                    </td>
                     <td className="px-6 py-3">{notice.notice_date}</td>
                     <td className="px-6 py-3">
                       {new Date(notice.created_at).toLocaleDateString()}
@@ -92,7 +132,10 @@ export default function NoticesPage() {
                         <button className="text-green-600 hover:text-green-800">
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-800">
+                        <button
+                          className="text-red-600 hover:text-red-800"
+                          onClick={() => handleDelete(notice.id)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -109,5 +152,5 @@ export default function NoticesPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

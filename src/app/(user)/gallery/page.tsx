@@ -1,68 +1,70 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import axios from 'axios'
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import axios from "axios";
+import Banner from "@/components/widgets/Banner";
 
 interface GalleryItem {
-  id: number
-  title: string
-  image: string
+  id: number;
+  title: string;
+  image: string;
 }
 
 const Gallery = () => {
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
-  const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/gallery')
+        const response = await axios.get("http://localhost:8000/api/gallery");
         if (response.data.status && response.data.data) {
-          setGalleryItems(response.data.data)
+          setGalleryItems(response.data.data);
         } else {
-          setError('Failed to load gallery images')
+          setError("Failed to load gallery images");
         }
       } catch (err: any) {
-        setError('Error loading gallery: ' + err.message)
+        setError("Error loading gallery: " + err.message);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchGallery()
-  }, [])
+    fetchGallery();
+  }, []);
 
   const handleImageClick = (image: GalleryItem) => {
-    setSelectedImage(image)
-  }
+    setSelectedImage(image);
+  };
 
   const closePopup = () => {
-    setSelectedImage(null)
-  }
+    setSelectedImage(null);
+  };
 
   const getImageUrl = (imagePath: string) => {
-    // Assumes public storage access is enabled via `php artisan storage:link`
-    return `/`
-  }
+    // Adjust as per your Laravel storage structure
+    return `http://localhost:8000/storage/${imagePath}`;
+  };
 
   return (
-    <div className="px-4 md:px-20 lg:px-60 py-10 md:py-20 font-poppins">
+    <div className="py-10 font-poppins">
+      <Banner title="Galllery" />
       {loading ? (
         <div className="text-center text-lg">Loading gallery...</div>
       ) : error ? (
         <div className="text-center text-red-600">{error}</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-30">
           {galleryItems.map((item) => (
             <div
               key={item.id}
-              className="cursor-pointer group"
+              className="flex-shrink-0 w-60 cursor-pointer group"
               onClick={() => handleImageClick(item)}
             >
-              <div className="relative h-60 w-full overflow-hidden rounded-lg shadow-md">
+              <div className="relative h-40 w-full overflow-hidden rounded-lg shadow-md">
                 <Image
                   src={getImageUrl(item.image)}
                   alt={item.title}
@@ -70,7 +72,9 @@ const Gallery = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <p className="mt-2 text-center font-medium">{item.title}</p>
+              <p className="mt-2 text-center font-medium text-sm">
+                {item.title}
+              </p>
             </div>
           ))}
         </div>
@@ -107,7 +111,7 @@ const Gallery = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Gallery
+export default Gallery;

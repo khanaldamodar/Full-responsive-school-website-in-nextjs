@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   UserGroupIcon,
   BookOpenIcon,
@@ -8,48 +10,74 @@ import {
   BuildingLibraryIcon,
   ArrowRightIcon,
 } from '@heroicons/react/24/outline'
-
 import Link from 'next/link'
 
-const stats = [
-  {
-    name: 'Teachers',
-    count: 35,
-    icon: UserGroupIcon,
-    link: '/admin/teachers',
-    color: 'bg-blue-100 text-blue-700',
-  },
-  {
-    name: 'Students',
-    count: 320,
-    icon: BuildingLibraryIcon,
-    link: '/admin/students',
-    color: 'bg-green-100 text-green-700',
-  },
-  {
-    name: 'Courses',
-    count: 24,
-    icon: BookOpenIcon,
-    link: '/admin/courses',
-    color: 'bg-purple-100 text-purple-700',
-  },
-  {
-    name: 'Events',
-    count: 5,
-    icon: CalendarIcon,
-    link: '/admin/events',
-    color: 'bg-orange-100 text-orange-700',
-  },
-  {
-    name: 'Notices',
-    count: 12,
-    icon: MegaphoneIcon,
-    link: '/admin/notices',
-    color: 'bg-pink-100 text-pink-700',
-  },
-]
+interface DashboardStats {
+  teachers: number
+  students: number
+  courses: number
+  events: number
+  notices: number
+  recent_activities?: string[]
+}
 
 export default function AdminDashboard() {
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
+
+        const res = await axios.get('http://127.0.0.1:8000/api/admin/dashboard', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        setStats(res.data.data)
+        console.log(res.data.data)
+      } catch (err) {
+        console.error('Dashboard fetch error', err)
+      }
+    }
+
+    fetchDashboard()
+  }, [])
+
+  if (!stats) return <p>Loading...</p>
+
+  const statsWithCounts = [
+    {
+      name: 'Teachers',
+      count: stats.teachers,
+      icon: UserGroupIcon,
+      link: '/admin/teachers',
+      color: 'bg-blue-100 text-blue-700',
+    },
+    {
+      name: 'Courses',
+      count: stats.courses,
+      icon: BookOpenIcon,
+      link: '/admin/courses',
+      color: 'bg-purple-100 text-purple-700',
+    },
+    {
+      name: 'Events',
+      count: stats.events,
+      icon: CalendarIcon,
+      link: '/admin/events',
+      color: 'bg-orange-100 text-orange-700',
+    },
+    {
+      name: 'Notices',
+      count: stats.notices,
+      icon: MegaphoneIcon,
+      link: '/admin/notices',
+      color: 'bg-pink-100 text-pink-700',
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 font-poppins">
       <div className="max-w-7xl mx-auto">
@@ -61,18 +89,14 @@ export default function AdminDashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {stats.map(({ name, count, icon: Icon, color, link }) => (
+          {statsWithCounts.map(({ name, count, icon: Icon, color, link }) => (
             <Link key={name} href={link}>
-              <div
-                className={`flex items-center justify-between p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer bg-white`}
-              >
+              <div className="flex items-center justify-between p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer bg-white">
                 <div>
                   <h2 className="text-sm font-medium text-gray-500">{name}</h2>
                   <p className="text-2xl font-bold text-gray-900">{count}</p>
                 </div>
-                <div
-                  className={`p-3 rounded-full ${color} transition duration-200`}
-                >
+                <div className={`p-3 rounded-full ${color} transition duration-200`}>
                   <Icon className="w-6 h-6" />
                 </div>
               </div>
@@ -100,16 +124,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Optional: Recent Activities */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Recent Activities</h2>
-          <ul className="text-sm text-gray-600 space-y-2">
-            <li>✔️ Added 3 new teachers</li>
-            <li>📢 Posted new notice for annual function</li>
-            <li>🖼️ Uploaded 5 new gallery images</li>
-            <li>📅 Scheduled a science exhibition event</li>
-          </ul>
-        </div>
+       
       </div>
     </div>
   )

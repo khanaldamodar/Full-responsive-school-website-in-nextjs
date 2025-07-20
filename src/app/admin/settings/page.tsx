@@ -28,7 +28,7 @@ export default function SettingsPage() {
   });
 
   const { data, loading, error, updateData } = useEdit<SchoolData>({
-    endpoint: `http://127.0.0.1:8000/api/school-information/2`, // Assuming ID=2
+    endpoint: `http://127.0.0.1:8000/api/school-information/3`, // Assuming ID=2
   });
 
   // Fetch school info on mount
@@ -36,7 +36,7 @@ export default function SettingsPage() {
     const fetchSchoolInfo = async () => {
       try {
         const res = await axios.get('http://127.0.0.1:8000/api/school-information');
-        const school = res.data.data[0]; // assuming the first item is the target
+        const school = res.data.data[1]; // assuming the first item is the target
 
         setFormData({
           schoolName: school.name || '',
@@ -48,7 +48,7 @@ export default function SettingsPage() {
         });
 
         if (school.logo) {
-          setPreview(`http://127.0.0.1:8000/storage/${school.logo}`); // Adjust if needed
+          setPreview(`http://127.0.0.1:8000/${school.logo}`); // Adjust if needed
         }
       } catch (err) {
         console.error('Error fetching school info:', err);
@@ -70,22 +70,24 @@ export default function SettingsPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    const updatedPayload = {
-      name: formData.schoolName,
-      address: formData.address,
-      phone: formData.phone,
-      email: formData.email,
-      description: formData.about,
-      school_start_time: formData.openingTime,
-    };
+  const form = new FormData();
+  form.append('name', formData.schoolName);
+  form.append('address', formData.address);
+  form.append('phone', formData.phone);
+  form.append('email', formData.email);
+  form.append('description', formData.about);
+  form.append('school_start_time', formData.openingTime);
 
-    await updateData(updatedPayload);
+  if (logo) {
+    form.append('logo', logo); // 👈 append logo file
+  }
 
-    alert('Settings updated successfully!');
-  };
+  await updateData(form, true); // 👈 use FormData
+  alert('Settings updated successfully!');
+};
 
   return (
     <div className="max-w-4xl mx-auto bg-white shadow-md p-6 mt-8 rounded-lg font-poppins">
