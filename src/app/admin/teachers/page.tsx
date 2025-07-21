@@ -5,6 +5,8 @@ import axios from "axios";
 import { Eye, Edit, Trash2, Plus, Search, Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+
 
 interface Subject {
   id: number;
@@ -32,6 +34,7 @@ interface TeacherResponse {
 export default function TeachersPage() {
   const [localData, setLocalData] = useState<Teacher[] | null>(null)
   const { data, loading, error } = useFetch<TeacherResponse>('http://127.0.0.1:8000/api/teachers')
+  const router = useRouter();
   
 // On first load, sync fetched data into local state
 useEffect(() => {
@@ -108,7 +111,7 @@ useEffect(() => {
               List of all teachers with assigned subjects
             </p>
           </div>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+          <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition" onClick={()=> router.push("/admin/teachers/add")}>
             <Plus className="w-5 h-5" />
             Add Teacher
           </button>
@@ -203,19 +206,13 @@ useEffect(() => {
                       <ul className="list-disc list-inside space-y-1">
                         {teacher.subjects.map((sub) => (
                           <li key={sub.id} className="text-gray-800 text-sm">
-                            {sub.name} ({sub.code})
+                            {sub.name} {sub.code}
                           </li>
                         ))}
                       </ul>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        <button
-                          className="text-blue-600 hover:text-blue-800"
-                          title="View"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
                         <button
                           className="text-green-600 hover:text-green-800"
                           title="Edit"

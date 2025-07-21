@@ -19,6 +19,7 @@ const Navbar = () => {
     { name: "Events", path: "/events" },
     { name: "Gallery", path: "/gallery" },
     { name: "Notices", path: "/notices" },
+    { name: "Teachers", path: "/teachers" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -77,12 +78,12 @@ const Navbar = () => {
               unoptimized
             />
           ) : (
-            <span className="text-gray-400 text-sm">Loading...</span>
+            <span className="text-gray-400 text-sm font-poppins">Loading...</span>
           )}
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-10 uppercase font-medium relative">
+        <ul className="hidden md:flex items-center gap-8 uppercase font-medium relative">
           {menuItems.map((item, index) => (
             <li
               key={index}

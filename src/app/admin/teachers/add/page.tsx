@@ -1,10 +1,12 @@
 'use client'
 
 import { usePost } from '@/services/usePost'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 
 export default function AddTeacherPage() {
+  const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([])
   const { post, loading, error } = usePost()
   const [photo, setPhoto] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -18,6 +20,31 @@ export default function AddTeacherPage() {
     about: '',
     subject_ids: [] as number[],
   })
+// Fetching the subjects
+  useEffect(() => {
+  const fetchSubjects = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/subjects')
+      setSubjects(response.data.data)
+      console.log("Subject Name", response.data.data)
+    } catch (error) {
+      console.error('Failed to fetch subjects:', error)
+    }
+  }
+
+  fetchSubjects()
+}, [])
+
+const handleCheckboxChange = (subjectId: number) => {
+  setFormData((prev) => {
+    const alreadySelected = prev.subject_ids.includes(subjectId)
+    const newSubjectIds = alreadySelected
+      ? prev.subject_ids.filter((id) => id !== subjectId)
+      : [...prev.subject_ids, subjectId]
+
+    return { ...prev, subject_ids: newSubjectIds }
+  })
+}
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -158,21 +185,28 @@ export default function AddTeacherPage() {
             className="w-full border border-gray-300 rounded-md p-2"
           ></textarea>
         </div>
-
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Select Subjects</label>
-          <select
-            multiple
-            onChange={handleSubjectChange}
-            className="w-full border border-gray-300 rounded-md p-2"
-          >
-            {/* These options should be fetched dynamically from your backend or be hardcoded for now */}
-            <option value="1">Math</option>
-            <option value="2">Science</option>
-            <option value="3">English</option>
-          </select>
-          <p className="text-sm text-gray-500 mt-1">Hold CTRL to select multiple subjects</p>
-        </div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">Select Subjects</label>
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    {subjects.map((subject) => (
+      <label
+        key={subject.id}
+        className="flex items-center gap-2 p-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
+      >
+        <input
+          type="checkbox"
+          value={subject.id}
+          checked={formData.subject_ids.includes(subject.id)}
+          onChange={() => handleCheckboxChange(subject.id)}
+        />
+        <span>{subject.name}</span>
+      </label>
+    ))}
+  </div>
+  <p className="text-sm text-gray-500 mt-1">You can select multiple subjects</p>
+</div>
+
+
 
         <div className="text-right">
           <button

@@ -1,69 +1,90 @@
 'use client'
-import { useFetch } from '@/services/useFetch'
-import Image from 'next/image'
-interface GalleryItem {
+
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+
+interface Course {
   id: number
-  title: string
+  name: string
   description: string
-  image: string
+  curriculum: string
+  addmission_info: string
+  duration?: string
+  teachers?: { id: number; name: string }[]
   created_at: string
 }
 
-interface GalleryResponse {
-  status: boolean
-  data: GalleryItem[]
-}
+export default function CourseListPage() {
+  const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-const page = () => {
-  const { data, loading, error } = useFetch<GalleryResponse>('http://127.0.0.1:8000/api/gallery')
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await axios.get('http://localhost:8000/api/courses')
+        setCourses(res.data.data || res.data)
+      } catch (err: any) {
+        setError('Failed to fetch courses.')
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCourses()
+  }, [])
 
   return (
-    <div className="p-6">
-      <h2 className="tex font-poppinst-2xl font-bold mb-4">Gallery Items</h2>
+    <div className="max-w-6xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md font-poppins">
+      <h1 className="text-3xl font-bold text-[#0949A3] mb-6">All Courses</h1>
 
-      {loading && <p className="text-blue-600">Loading...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
-      {!loading && data?.data && data.data.length > 0 ? (
+      {loading ? (
+        <p className="text-gray-500">Loading courses...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : courses.length === 0 ? (
+        <p className="text-gray-500">No courses found.</p>
+      ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <thead className="bg-blue-600 text-white">
+          <table className="w-full border border-gray-300 rounded-md">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 text-left">#</th>
-                <th className="px-4 py-2 text-left">Title</th>
-                <th className="px-4 py-2 text-left">Description</th>
-                <th className="px-4 py-2 text-left">Image</th>
-                <th className="px-4 py-2 text-left">Created At</th>
+                <th className="p-3 text-left">#</th>
+                <th className="p-3 text-left">Name</th>
+                <th className="p-3 text-left">Description</th>
+                <th className="p-3 text-left">Teachers</th>
+                <th className="p-3 text-left">Admission Info</th>
+                <th className="p-3 text-left">Created</th>
+                <th className="p-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {data.data.map((item, index) => (
-                <tr key={item.id} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}>
-                  <td className="px-4 py-2">{index + 1}</td>
-                  <td className="px-4 py-2">{item.title}</td>
-                  <td className="px-4 py-2">{item.description}</td>
-                  <td className="px-4 py-2">
-                    <img
-                      src={`http://127.0.0.1:8000/storage/${item.image.replace(/^.*[\\/]/, '')}`}
-                      alt={item.title}
-                      className="w-16 h-16 object-cover rounded"
-                      onError={(e) => {
-                        e.currentTarget.src = ''
-                      }}
-                    />
+              {courses.map((course, index) => (
+                <tr key={course.id} className="border-t border-gray-200 hover:bg-gray-50">
+                  <td className="p-3">{index + 1}</td>
+                  <td className="p-3 font-semibold text-[#0949A3]">{course.name}</td>
+                  <td className="p-3 text-sm text-gray-700 max-w-xs truncate">{course.description}</td>
+                  <td className="p-3 text-sm">
+                    {course.teachers?.map((t) => t.name).join(', ') || '—'}
                   </td>
-                  <td className="px-4 py-2">
-                    {new Date(item.created_at).toLocaleDateString()}
+                  <td className="p-3 text-sm text-gray-700">{course.addmission_info || '—'}</td>
+                  <td className="p-3 text-sm text-gray-500">{new Date(course.created_at).toLocaleDateString()}</td>
+                  <td className="p-3 text-sm">
+                    <div className="flex gap-2">
+                      <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs">
+                        Edit
+                      </button>
+                      <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-xs">
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      ) : (
-        !loading && <p className="text-gray-500">No gallery items found.</p>
       )}
     </div>
   )
 }
-
-export default page
