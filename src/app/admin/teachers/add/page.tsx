@@ -3,13 +3,19 @@
 import { usePost } from '@/services/usePost'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import Cookies from 'js-cookie'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 
 export default function AddTeacherPage() {
+  const searchParams = useSearchParams()
+   const router = useRouter()
+  const teacherId = searchParams.get('id')
   const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([])
   const { post, loading, error } = usePost()
   const [photo, setPhoto] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -26,7 +32,7 @@ export default function AddTeacherPage() {
     try {
       const response = await axios.get('http://localhost:8000/api/subjects')
       setSubjects(response.data.data)
-      console.log("Subject Name", response.data.data)
+     
     } catch (error) {
       console.error('Failed to fetch subjects:', error)
     }
@@ -35,22 +41,44 @@ export default function AddTeacherPage() {
   fetchSubjects()
 }, [])
 
-const handleCheckboxChange = (subjectId: number) => {
-  setFormData((prev) => {
-    const alreadySelected = prev.subject_ids.includes(subjectId)
-    const newSubjectIds = alreadySelected
-      ? prev.subject_ids.filter((id) => id !== subjectId)
-      : [...prev.subject_ids, subjectId]
+  
+  useEffect(() => {
+    if (teacherId) {
+      const fetchTeacher = async () => {
+        try {
+          const res = await axios.get(`http://127.0.0.1:8000/api/teachers/${teacherId}`)
+          const teacher = res.data.data
 
-    return { ...prev, subject_ids: newSubjectIds }
-  })
-}
+          setFormData({
+            name: teacher.name,
+            qualification: teacher.qualification,
+            phone: teacher.phone,
+            email: teacher.email,
+            address: teacher.address,
+            about: teacher.bio,
+            subject_ids: teacher.subjects.map((s: any) => s.id),
+          })
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+          if (teacher.profile_picture) {
+            setPreview(`http://127.0.0.1:8000/storage/teachers/profile_pictures/${teacher.profile_picture}`)
+          }
+        } catch (err) {
+          console.error('Error fetching teacher data:', err)
+        }
+      }
+
+      fetchTeacher()
+    }
+  }, [teacherId])
+
+  const handleCheckboxChange = (subjectId: number) => {
+    setFormData((prev) => {
+      const alreadySelected = prev.subject_ids.includes(subjectId)
+      const updated = alreadySelected
+        ? prev.subject_ids.filter((id) => id !== subjectId)
+        : [...prev.subject_ids, subjectId]
+      return { ...prev, subject_ids: updated }
+    })
   }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,13 +88,19 @@ const handleCheckboxChange = (subjectId: number) => {
       setPreview(URL.createObjectURL(file))
     }
   }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleSubjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(e.target.selectedOptions).map((o) => parseInt(o.value))
     setFormData((prev) => ({ ...prev, subject_ids: selectedOptions }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const payload = new FormData()
@@ -85,20 +119,29 @@ const handleCheckboxChange = (subjectId: number) => {
       payload.append('profile_picture', photo)
     }
 
+    const token = Cookies.get('token')
+
     try {
-      const response = await post('http://127.0.0.1:8000/api/teachers', payload)
-      alert('Teacher created successfully!')
-      console.log(response)
+      if (teacherId) {
+        payload.append('_method', 'PUT')
+        await axios.post(`http://127.0.0.1:8000/api/teachers/${teacherId}`, payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        alert('Teacher updated successfully!')
+      } else {
+        await axios.post('http://127.0.0.1:8000/api/teachers', payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        alert('Teacher created successfully!')
+      }
+
+      router.push('/admin/teachers')
     } catch (err: any) {
-  if (err.response?.status === 422) {
-    console.error("Validation errors:", err.response.data.errors)
-    alert("Validation failed. Check console.")
-  } else {
-    console.error("Error creating teacher", err)
-    alert("An error occurred while creating teacher")
+      console.error('Error saving teacher:', err)
+      
+    } 
   }
-}
-  }
+
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md font-poppins">

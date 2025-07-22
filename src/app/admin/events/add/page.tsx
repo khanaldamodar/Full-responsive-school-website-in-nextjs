@@ -43,7 +43,7 @@ export default function AddEventPage() {
 
     try {
       const result = await post('http://localhost:8000/api/events', formData)
-      console.log('Posted:', result)
+      
       setSuccess(true)
       setTitle('')
       setDescription('')

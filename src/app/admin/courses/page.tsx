@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 interface Course {
   id: number
@@ -15,6 +16,7 @@ interface Course {
 }
 
 export default function CourseListPage() {
+  const router = useRouter()
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -71,7 +73,7 @@ export default function CourseListPage() {
                   <td className="p-3 text-sm text-gray-500">{new Date(course.created_at).toLocaleDateString()}</td>
                   <td className="p-3 text-sm">
                     <div className="flex gap-2">
-                      <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs">
+                      <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs" onClick={() => router.push(`/admin/courses/add?id=${course.id}`)}>
                         Edit
                       </button>
                       <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-xs">

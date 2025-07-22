@@ -8,11 +8,8 @@ const page = () => {
   return (
 
   <>
-  <Banner
-        title="About Us"
-        />
-    <div className='flex  justify-between px-40 py-40'>
-      
+  <Banner title="About Us" />
+    <div className='flex flex-col lg:flex-row justify-between px-5 lg:px-40 lg:py-40'>
         <About/>
         <div className='flex flex-col gap-20'>
         <RecentNews/>

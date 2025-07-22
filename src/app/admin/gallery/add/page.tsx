@@ -35,7 +35,7 @@ export default function AddImagePage() {
     try {
       const res = await post('http://127.0.0.1:8000/api/gallery', formData)
       alert('Image uploaded successfully!')
-      console.log(res)
+    
     } catch (err: any) {
       if (err.response?.status === 422) {
         console.error('Validation errors:', err.response.data.errors)

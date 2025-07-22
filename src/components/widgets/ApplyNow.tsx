@@ -17,7 +17,7 @@ const ApplyNow = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", form);
+    
     // You can add actual form submission logic here (API call etc.)
   };
 

@@ -36,7 +36,6 @@ export default function AdminDashboard() {
         })
 
         setStats(res.data.data)
-        console.log(res.data.data)
       } catch (err) {
         console.error('Dashboard fetch error', err)
       }

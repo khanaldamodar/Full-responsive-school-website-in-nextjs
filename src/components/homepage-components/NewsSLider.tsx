@@ -19,7 +19,7 @@ const NewsSlider = () => {
       try {
         const response = await axios.get("http://localhost:8000/api/events");
         // Assuming response.data is an array of events sorted by newest first
-        console.log(response.data.data)
+        
         setEvents(response.data.data.slice(0, 6)); 
       } catch (error) {
         console.error("Failed to fetch events:", error);

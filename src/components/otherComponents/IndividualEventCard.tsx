@@ -25,7 +25,7 @@ const IndividualEventCard = ({
   const router = useRouter()
   const slug = generateSlug(title)
 
-  console.log(image)
+ 
 
   const handleClick = () => {
     router.push(`/events/${slug}`)

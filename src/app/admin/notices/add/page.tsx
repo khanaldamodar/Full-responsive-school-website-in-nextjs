@@ -35,7 +35,7 @@ export default function AddNoticePage() {
 
     try {
       const result = await post('http://127.0.0.1:8000/api/notices', formData)
-      console.log('Posted:', result)
+      
       setSuccess(true)
       setTitle('')
       setDescription('')

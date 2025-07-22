@@ -5,6 +5,7 @@ import axios from 'axios'
 import { Eye, Edit, Trash2, Plus, Search, Filter } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
+import { useRouter } from 'next/navigation'
 
 interface EventItem {
   id: number
@@ -24,8 +25,8 @@ interface EventResponse {
 }
 
 export default function EventsPage() {
+  const router = useRouter()
   const [localEvents, setLocalEvents] = useState<EventItem[] | null>(null)
-
   const { data, loading, error } = useFetch<EventResponse>('http://127.0.0.1:8000/api/events')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedItems, setSelectedItems] = useState<number[]>([])
@@ -84,7 +85,7 @@ const handleDelete = async (id: number) => {
             <h1 className="text-3xl font-bold text-gray-800">School Events</h1>
             <p className="text-gray-600">List of all school events</p>
           </div>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+          <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition" onClick={()=> router.push('/admin/events/add')}>
             <Plus className="w-5 h-5" />
             Add Event
           </button>

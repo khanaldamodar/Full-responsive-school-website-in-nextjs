@@ -130,7 +130,7 @@ export default function TeachersPage() {
                     <img
                       src={getProfilePictureUrl(teacher.profile_picture)}
                       alt={teacher.name}
-                      className="md:w-40 md:h-40 w-20 h-20 rounded-full object-cover border-4 border-gray-100"
+                      className="lg:w-40 lg:h-40  md:w-30 md:h-30 w-20 h-20 rounded-full object-cover border-4 border-gray-100"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
                         target.src = '/default-avatar.png'

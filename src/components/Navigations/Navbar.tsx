@@ -14,7 +14,7 @@ const Navbar = () => {
 
   const menuItems = [
     { name: "Home", path: "/" },
-    { name: "About Us", path: "/about" },
+    { name: "About", path: "/about" },
     { name: "Academics", path: "/academics" },
     { name: "Events", path: "/events" },
     { name: "Gallery", path: "/gallery" },
@@ -83,7 +83,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex items-center gap-8 uppercase font-medium relative">
+        <ul className="hidden lg:flex items-center gap-8 uppercase  font-medium relative">
           {menuItems.map((item, index) => (
             <li
               key={index}
@@ -101,7 +101,7 @@ const Navbar = () => {
         </ul>
 
         {/* Contact Button */}
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <button
             className="border-2 border-blue-500 rounded-xl px-4 py-2 cursor-pointer transition-colors duration-200 hover:bg-blue-500 hover:text-white"
             onClick={handleContactButton}
@@ -111,7 +111,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <button onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -120,8 +120,8 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden px-4 pb-4">
-          <ul className="space-y-4 text-sm font-medium">
+        <div className="lg:hidden px-4 pb-4">
+          <ul className="space-y-4 text-sm md:text-lg font-medium">
             {menuItems.map((item, index) => (
               <li key={index}>
                 <div
@@ -145,7 +145,7 @@ const Navbar = () => {
                   handleContactButton();
                 }}
               >
-                Get in Touch
+                Addmission Open
               </button>
             </li>
           </ul>

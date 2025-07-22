@@ -66,7 +66,7 @@ const AdmissionForm = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-xl mt-10 font-poppins lg:my-40">
+    <div className="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-xl mt-30 font-poppins lg:my-40">
       <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">
         Student Admission Form
       </h1>

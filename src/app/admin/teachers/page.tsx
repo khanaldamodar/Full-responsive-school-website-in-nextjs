@@ -216,6 +216,7 @@ useEffect(() => {
                         <button
                           className="text-green-600 hover:text-green-800"
                           title="Edit"
+                          onClick={()=> router.push(`/admin/teachers/add?id=${teacher.id}`)}
                         >
                           <Edit className="w-4 h-4" />
                         </button>

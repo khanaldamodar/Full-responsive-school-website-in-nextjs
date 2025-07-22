@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { useSearchParams } from 'next/navigation'
+
 
 interface Teacher {
   id: number
@@ -10,6 +12,9 @@ interface Teacher {
 }
 
 export default function AddCoursePage() {
+
+   const searchParams = useSearchParams()
+  const courseId = searchParams.get('id') // if exists, it's edit mode
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -20,6 +25,7 @@ export default function AddCoursePage() {
 
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [loading, setLoading] = useState(true)
 
   // Fetch all teachers
   useEffect(() => {
@@ -30,6 +36,27 @@ export default function AddCoursePage() {
       })
       .catch((err) => console.error('Error loading teachers', err))
   }, [])
+// ifediting, fetch course details
+  useEffect(() => {
+    if (courseId) {
+      axios
+        .get(`http://localhost:8000/api/courses/${courseId}`)
+        .then((res) => {
+          const data = res.data.data || res.data
+          setForm({
+            name: data.name,
+            description: data.description,
+            curriculum: data.curriculum,
+            addmission_info: data.addmission_info,
+            teacher_ids: data.teachers?.map((t: any) => t.id) || [],
+          })
+        })
+        .catch((err) => console.error('Error loading course', err))
+        .finally(() => setLoading(false))
+    } else {
+      setLoading(false)
+    }
+  }, [courseId])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -53,33 +80,46 @@ export default function AddCoursePage() {
     })
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+ const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
 
     try {
-      const token = Cookies.get("token")
-      const res = await axios.post('http://localhost:8000/api/courses', form, {
-        headers:{
+      const token = Cookies.get('token')
+      const url = courseId
+        ? `http://localhost:8000/api/courses/${courseId}`
+        : 'http://localhost:8000/api/courses'
+
+      const method = courseId ? 'put' : 'post'
+
+      await axios({
+        url,
+        method,
+        data: form,
+        headers: {
           Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        }
+          'Content-Type': 'application/json',
+        },
       })
-      alert('Course created successfully!')
-      console.log('Response:', res.data)
+
+      alert(courseId ? 'Course updated successfully!' : 'Course created successfully!')
     } catch (err: any) {
       console.error(err.response)
       if (err.response?.data?.errors) {
         setErrors(err.response.data.errors)
       } else {
-        alert('Failed to create course.')
+        alert('Failed to submit course.')
       }
     }
   }
 
+  if (loading) return <p className="text-center mt-10 text-gray-500">Loading...</p>
+
   return (
     <div className="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md font-poppins">
-      <h1 className="text-3xl font-bold text-[#0949A3] mb-6">Add New Course</h1>
+       <h1 className="text-3xl font-bold text-[#0949A3] mb-6">
+        {courseId ? 'Edit Course' : 'Add New Course'}
+      </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Course Title */}
@@ -175,11 +215,11 @@ export default function AddCoursePage() {
 
         {/* Submit Button */}
         <div className="text-right">
-          <button
+         <button
             type="submit"
             className="bg-[#0949A3] text-white px-6 py-2 rounded-md hover:bg-blue-800 transition"
           >
-            Save Course
+            {courseId ? 'Update Course' : 'Save Course'}
           </button>
         </div>
       </form>

@@ -64,7 +64,7 @@ const page = () => {
     <div className="font-poppins">
       <Banner title="Contact" />
       <div className="bg-[#FFFFFF]">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 px-10 md:px-40 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 px-10 lg:px-40 py-20">
           {contactDetails.map((item, index) => (
             <ContactCard
               key={index}
@@ -77,7 +77,7 @@ const page = () => {
       </div>
 
       {/* Contact form and Map */}
-      <div className="flex flex-col md:flex-row items-start justify-center md:gap-20 md:px-30">
+      <div className="flex flex-col lg:flex-row items-start justify-center gap-10 lg:gap-20 px-10 lg:px-30">
         <ContactForm />
         <Map />
       </div>

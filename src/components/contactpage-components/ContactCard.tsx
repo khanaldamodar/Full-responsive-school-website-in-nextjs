@@ -12,8 +12,8 @@ const ContactCard = ({title, detail, icon}: ContactType) => {
         <div className='text-3xl text-white bg-[#0949A3]  w-20 h-20 rounded-full hover:text-[#0949A3] hover:bg-white flex items-center justify-center'>
             {icon}
         </div>
-        <h2 className='text-xl font-bold'>{title}</h2>
-        <p className='text-center '>{detail}</p>
+        <h2 className=' font-bold text-base'>{title}</h2>
+        <p className='text-center text-base md:text-sm'>{detail}</p>
 
     </div>
   )

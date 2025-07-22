@@ -21,7 +21,7 @@ const Banner = ({ title }: BannerType) => {
 
       {/* Overlay Text */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <h1 className="z-10 text-white font-bold text-4xl font-poppins text-center">
+        <h1 className="z-10 text-white font-bold text-4xl font-poppins text-center flex items-center justify-center">
           {title}
         </h1>
       </div>

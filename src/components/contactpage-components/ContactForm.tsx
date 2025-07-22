@@ -2,7 +2,7 @@ import React from 'react'
 
 const ContactForm = () => {
   return (
-    <div className="font-poppins shadow-xl p-5 md:p-10 rounded-xl my-7 bg-white w-full max-w-4xl mx-auto">
+    <div className="font-poppins shadow-xl p-5 md:px-30 rounded-xl my-7 bg-white w-full max-w-4xl mx-auto">
       <h1 className="text-center font-bold text-2xl pb-6">Contact Form</h1>
       <form
         action=""
