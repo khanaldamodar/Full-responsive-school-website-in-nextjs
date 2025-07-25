@@ -25,7 +25,8 @@ const RecentBlogs = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/events");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await axios.get(`${apiUrl}events`);
         if (res.data.status && Array.isArray(res.data.data)) {
           const sortedEvents = res.data.data
             .sort(

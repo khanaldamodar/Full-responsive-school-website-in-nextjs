@@ -14,10 +14,12 @@ interface Event {
 const NewsSlider = () => {
   const [events, setEvents] = useState<Event[]>([]);
 
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/events");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const response = await axios.get(`${apiUrl}events`);
         // Assuming response.data is an array of events sorted by newest first
         
         setEvents(response.data.data.slice(0, 6)); 
@@ -45,7 +47,7 @@ const NewsSlider = () => {
           {events.map((event, index) => (
             <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden h-full">
               <img
-                src={`http://localhost:8000/storage/${event.image}`}
+                src={`${imageUrl}public/storage/${event.image}`}
                 alt={event.title}
                 className="w-full h-48 object-cover"
               />

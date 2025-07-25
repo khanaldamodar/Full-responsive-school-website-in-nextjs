@@ -28,11 +28,13 @@ const IndividualEventPage = () => {
 
   const params = useParams();
   const slug = params.slug?.toString();
+  const imageUrl =process.env.NEXT_PUBLIC_BASE_URL
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const result = await axios.get('http://127.0.0.1:8000/api/events');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const result = await axios.get(`${apiUrl}events`);
         const allEvents: Event[] = result.data.data;
 
         const found = allEvents.find(
@@ -77,7 +79,7 @@ const IndividualEventPage = () => {
 
         <div className="relative w-full h-72 md:h-96 mb-8">
           <Image
-            src={`http://127.0.0.1:8000/storage/${event.image}`}
+            src={`${imageUrl}public/storage/${event.image}`}
             alt={event.title}
             fill
             unoptimized

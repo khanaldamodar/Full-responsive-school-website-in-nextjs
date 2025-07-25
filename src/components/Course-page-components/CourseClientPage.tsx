@@ -33,11 +33,14 @@ export default function CourseClientPage({ slug }: { slug: string }) {
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
       const [activeTab, setActiveTab] = useState("Description");
+      const imageUrl = process.env.NEXT_PUBLIC_BASE_URL;
   useEffect(() => {
     const fetchCourse = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
         setLoading(true);
-        const response = await fetch(`http://localhost:8000/api/courses/${slug}`);
+        const response = await fetch(`${apiUrl}courses/${slug}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         setCourse(data);
@@ -139,7 +142,7 @@ export default function CourseClientPage({ slug }: { slug: string }) {
                                                 <div className="flex-shrink-0">
                                                     {teacher.profile_picture ? (
                                                         <img 
-                                                            src={`http://localhost:8000/storage/${teacher.profile_picture}`}
+                                                            src={`${imageUrl}public/storage/${teacher.profile_picture}`}
                                                             alt={teacher.name}
                                                             className="w-12 h-12 rounded-full object-cover"
                                                         />

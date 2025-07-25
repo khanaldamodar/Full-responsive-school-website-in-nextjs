@@ -13,7 +13,9 @@ export default function About() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/school-information/${schoolId}`)
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        const res = await axios.get(`${apiUrl}school-information/${schoolId}`)
         setDescription(res.data?.data.description || '')
         
       } catch (err) {

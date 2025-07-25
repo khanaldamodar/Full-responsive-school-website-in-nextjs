@@ -29,13 +29,16 @@ const NoticesPage: React.FC = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const result = await axios.get<NoticeApiResponse>("http://localhost:8000/api/notices");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const result = await axios.get<NoticeApiResponse>(`${apiUrl}notices`);
 
         if (result.data.status && result.data.data) {
+          console.log(result.data)
           setNotices(result.data.data);
         } else {
           setError("Failed to fetch notices");
@@ -77,7 +80,7 @@ const NoticesPage: React.FC = () => {
                 title={notice.title}
                 date={dayjs(notice.notice_date).format("YYYY-MM-DD")}
                 description={notice.description}
-                image={notice.image ? `http://localhost:8000/storage/${notice.image}` : undefined}
+                image={notice.image ? `${imageUrl}public/storage/${notice.image}` : undefined}
               />
             ))
           ) : (

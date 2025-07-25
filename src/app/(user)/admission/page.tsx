@@ -39,7 +39,9 @@ const AdmissionForm = () => {
 
     try {
       // Replace URL with your backend endpoint
-      const res = await fetch('http://localhost:8000/api/admissions', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+      const res = await fetch(`${apiUrl}admissions`, {
         method: 'POST',
         body: data,
       })

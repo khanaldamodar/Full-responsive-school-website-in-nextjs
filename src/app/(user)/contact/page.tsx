@@ -22,8 +22,9 @@ const page = () => {
   useEffect(() => {
     const fetchSchoolInfo = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const response = await fetch(
-          "http://localhost:8000/api/school-information/3"
+          `${apiUrl}school-information/3`
         );
         const data = await response.json();
 

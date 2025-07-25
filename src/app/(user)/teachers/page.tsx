@@ -41,13 +41,15 @@ export default function TeachersPage() {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
 
   // Fetch teachers data
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         setLoading(true)
-        const response = await axios.get<ApiResponse>('http://localhost:8000/api/teachers')
+        const response = await axios.get<ApiResponse>(`${apiUrl}teachers`)
         
         if (response.data.status) {
           setTeachers(response.data.data)
@@ -70,7 +72,7 @@ export default function TeachersPage() {
     if (!profilePicture) {
       return '/default-avatar.png' // Fallback image
     }
-    return `http://localhost:8000/storage/${profilePicture}`
+    return `${imageUrl}public/storage/${profilePicture}`
   }
 
   // Create slug from teacher name

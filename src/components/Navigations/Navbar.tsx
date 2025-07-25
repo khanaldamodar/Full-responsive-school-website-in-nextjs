@@ -36,10 +36,12 @@ const Navbar = () => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/school-information/3");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+        const res = await fetch(`${apiUrl}school-information/3`);
         const data = await res.json();
         if (data?.data?.logo) {
-          setLogoUrl(`http://localhost:8000/${data.data.logo}`);
+          setLogoUrl(`${baseUrl}public/${data.data.logo}`);
         }
       } catch (err) {
         console.error("Failed to fetch logo:", err);

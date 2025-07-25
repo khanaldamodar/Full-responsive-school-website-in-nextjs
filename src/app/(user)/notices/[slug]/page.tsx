@@ -21,11 +21,13 @@ const NoticeDetailPage = () => {
   const [notice, setNotice] = useState<Notice | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
 
   useEffect(() => {
     const fetchNotice = async () => {
       try {
-        const { data } = await axios.get('http://localhost:8000/api/notices');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const { data } = await axios.get(`${apiUrl}notices`);
         const matched = data.data.find((item: Notice) =>
           item.title.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '') === slug
         );
@@ -60,7 +62,7 @@ const NoticeDetailPage = () => {
             <Image
               fill
               unoptimized
-              src={`http://localhost:8000/storage/${notice.image}`}
+              src={`${imageUrl}public/storage/${notice.image}`}
               alt={notice.title}
               className="object-cover rounded-lg"
             />

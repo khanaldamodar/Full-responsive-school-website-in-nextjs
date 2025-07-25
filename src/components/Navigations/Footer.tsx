@@ -22,7 +22,9 @@ const Footer = () => {
   useEffect(() => {
     const fetchSchoolInfo = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/school-information/3");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        const response = await fetch(`${apiUrl}school-information/3`);
         const data = await response.json();
 
         if (data.status && data.data) {

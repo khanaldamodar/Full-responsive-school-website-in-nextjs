@@ -16,11 +16,13 @@ const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const imageUrl =process.env.NEXT_PUBLIC_BASE_URL
 
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/gallery");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const response = await axios.get(`${apiUrl}gallery`);
         if (response.data.status && response.data.data) {
           setGalleryItems(response.data.data);
         } else {
@@ -46,7 +48,7 @@ const Gallery = () => {
 
   const getImageUrl = (imagePath: string) => {
     // Adjust as per your Laravel storage structure
-    return `http://localhost:8000/storage/${imagePath}`;
+    return `${imageUrl}public/storage/${imagePath}`;
   };
 
   return (
@@ -69,6 +71,7 @@ const Gallery = () => {
                   src={getImageUrl(item.image)}
                   alt={item.title}
                   fill
+                  unoptimized
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
@@ -104,6 +107,7 @@ const Gallery = () => {
                 src={getImageUrl(selectedImage.image)}
                 alt={selectedImage.title}
                 fill
+                unoptimized
                 className="object-contain"
               />
             </div>

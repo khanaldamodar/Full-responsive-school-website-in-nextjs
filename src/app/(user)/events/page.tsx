@@ -25,12 +25,12 @@ const EventsPage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const imageUrl =process.env.NEXT_PUBLIC_BASE_URL
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const result = await axios.get<EventApiResponse>("http://127.0.0.1:8000/api/events");
-
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const result = await axios.get<EventApiResponse>(`${apiUrl}events`);
         if (result.data.status && result.data.data) {
           setEvents(result.data.data);
         } else {
@@ -80,7 +80,7 @@ const EventsPage: React.FC = () => {
               date={dayjs(event.event_date).format("YYYY-MM-DD")}
               description={event.description}
               location={event.location}
-              image={`http://127.0.0.1:8000/storage/${event.image}`}
+              image={`${imageUrl}public/storage/${event.image}`}
             />
           ))
         ) : (

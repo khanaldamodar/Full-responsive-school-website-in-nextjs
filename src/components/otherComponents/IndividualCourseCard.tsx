@@ -10,8 +10,10 @@ const IndividualCourseCard = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
         setLoading(true);
-        const response = await fetch('http://localhost:8000/api/courses');
+        const response = await fetch(`${apiUrl}courses`);
 
         
         
