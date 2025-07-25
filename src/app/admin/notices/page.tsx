@@ -5,6 +5,8 @@ import { Edit, Eye, Trash2, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useRouter } from 'next/navigation'
+
 
 interface Notice {
   id: number;
@@ -21,6 +23,8 @@ interface NoticeResponse {
 }
 
 export default function NoticesPage() {
+  const router = useRouter();
+
   const [localNotices, setLocalNotices] = useState<Notice[] | null>(null);
   const { data, loading, error } = useFetch<NoticeResponse>(
     "http://127.0.0.1:8000/api/notices"
@@ -126,9 +130,15 @@ export default function NoticesPage() {
                     </td>
                     <td className="px-6 py-3 text-center">
                       <div className="flex justify-center gap-2">
-                        <button className="text-green-600 hover:text-green-800">
+                        <button
+                          className="text-green-600 hover:text-green-800"
+                          onClick={() =>
+                            router.push(`/admin/notices/add?id=${notice.id}`)
+                          }
+                        >
                           <Edit className="w-4 h-4" />
                         </button>
+
                         <button
                           className="text-red-600 hover:text-red-800"
                           onClick={() => handleDelete(notice.id)}

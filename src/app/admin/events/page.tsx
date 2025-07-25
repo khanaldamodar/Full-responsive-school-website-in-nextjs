@@ -1,81 +1,87 @@
-'use client'
+"use client";
 
-import { useFetch } from '@/services/useFetch'
-import axios from 'axios'
-import { Eye, Edit, Trash2, Plus, Search, Filter } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import Cookies from 'js-cookie'
-import { useRouter } from 'next/navigation'
+import { useFetch } from "@/services/useFetch";
+import axios from "axios";
+import { Eye, Edit, Trash2, Plus, Search, Filter } from "lucide-react";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 interface EventItem {
-  id: number
-  title: string
-  description: string
-  event_date: string
-  location: string
-  organizer: string
-  about_event: string
-  image: string
-  created_at: string
+  id: number;
+  title: string;
+  description: string;
+  event_date: string;
+  location: string;
+  organizer: string;
+  about_event: string;
+  image: string;
+  created_at: string;
 }
 
 interface EventResponse {
-  status: boolean
-  data: EventItem[]
+  status: boolean;
+  data: EventItem[];
 }
 
 export default function EventsPage() {
-  const router = useRouter()
-  const [localEvents, setLocalEvents] = useState<EventItem[] | null>(null)
-  const { data, loading, error } = useFetch<EventResponse>('http://127.0.0.1:8000/api/events')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedItems, setSelectedItems] = useState<number[]>([])
+  const router = useRouter();
+  const [localEvents, setLocalEvents] = useState<EventItem[] | null>(null);
+  const { data, loading, error } = useFetch<EventResponse>(
+    "http://127.0.0.1:8000/api/events"
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked && data?.data) {
-      setSelectedItems(data.data.map(item => item.id))
+      setSelectedItems(data.data.map((item) => item.id));
     } else {
-      setSelectedItems([])
+      setSelectedItems([]);
     }
-  }
+  };
 
   useEffect(() => {
-  if (data?.data && !localEvents) {
-    setLocalEvents(data.data)
-  }
-}, [data])
+    if (data?.data && !localEvents) {
+      setLocalEvents(data.data);
+    }
+  }, [data]);
 
-const handleDelete = async (id: number) => {
-  const confirmDelete = confirm('Are you sure you want to delete this event?')
-  if (!confirmDelete) return
+  const handleDelete = async (id: number) => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this event?"
+    );
+    if (!confirmDelete) return;
 
-  try {
-    const token = Cookies.get('token')
+    try {
+      const token = Cookies.get("token");
 
-    await axios.delete(`http://127.0.0.1:8000/api/events/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+      await axios.delete(`http://127.0.0.1:8000/api/events/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setLocalEvents(prev => prev?.filter(event => event.id !== id) || [])
-    setSelectedItems(prev => prev.filter(item => item !== id))
-  } catch (err) {
-    console.error('Failed to delete event:', err)
-    alert('Failed to delete event. Please try again.')
-  }
-}
-
+      setLocalEvents((prev) => prev?.filter((event) => event.id !== id) || []);
+      setSelectedItems((prev) => prev.filter((item) => item !== id));
+    } catch (err) {
+      console.error("Failed to delete event:", err);
+      alert("Failed to delete event. Please try again.");
+    }
+  };
 
   const handleSelectItem = (id: number, checked: boolean) => {
-    setSelectedItems(checked ? [...selectedItems, id] : selectedItems.filter(i => i !== id))
-  }
+    setSelectedItems(
+      checked ? [...selectedItems, id] : selectedItems.filter((i) => i !== id)
+    );
+  };
 
-  const filteredData = localEvents?.filter(item =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.organizer.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredData = localEvents?.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.organizer.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen font-poppins">
@@ -85,7 +91,10 @@ const handleDelete = async (id: number) => {
             <h1 className="text-3xl font-bold text-gray-800">School Events</h1>
             <p className="text-gray-600">List of all school events</p>
           </div>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition" onClick={()=> router.push('/admin/events/add')}>
+          <button
+            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
+            onClick={() => router.push("/admin/events/add")}
+          >
             <Plus className="w-5 h-5" />
             Add Event
           </button>
@@ -112,7 +121,9 @@ const handleDelete = async (id: number) => {
 
         <div className="bg-white rounded-lg shadow overflow-x-auto">
           {loading ? (
-            <div className="p-6 text-center text-gray-600">Loading events...</div>
+            <div className="p-6 text-center text-gray-600">
+              Loading events...
+            </div>
           ) : error ? (
             <div className="p-6 text-center text-red-500">Error: {error}</div>
           ) : filteredData && filteredData.length > 0 ? (
@@ -143,13 +154,18 @@ const handleDelete = async (id: number) => {
                       <input
                         type="checkbox"
                         checked={selectedItems.includes(event.id)}
-                        onChange={(e) => handleSelectItem(event.id, e.target.checked)}
+                        onChange={(e) =>
+                          handleSelectItem(event.id, e.target.checked)
+                        }
                       />
                     </td>
                     <td className="px-4 py-3 font-medium">{index + 1}</td>
                     <td className="px-4 py-3">
                       <img
-                        src={`http://127.0.0.1:8000/storage/events/${event.image.replace(/^.*[\\/]/, '')}`}
+                        src={`http://127.0.0.1:8000/storage/events/${event.image.replace(
+                          /^.*[\\/]/,
+                          ""
+                        )}`}
                         alt={event.title}
                         className="w-14 h-14 object-cover rounded"
                         // onError={(e) => {
@@ -163,7 +179,10 @@ const handleDelete = async (id: number) => {
                     </td>
                     <td className="px-4 py-3">{event.location}</td>
                     <td className="px-4 py-3">{event.organizer}</td>
-                    <td className="px-4 py-3 truncate max-w-xs" title={event.description}>
+                    <td
+                      className="px-4 py-3 truncate max-w-xs"
+                      title={event.description}
+                    >
                       {event.description}
                     </td>
                     <td className="px-4 py-3">
@@ -171,10 +190,13 @@ const handleDelete = async (id: number) => {
                         <button
                           className="text-green-600 hover:text-green-800"
                           title="Edit"
-                          onClick={() => console.log('Edit', event.id)}
+                          onClick={() =>
+                            router.push(`/admin/events/add?id=${event.id}`)
+                          }
                         >
                           <Edit className="w-4 h-4" />
                         </button>
+
                         <button
                           className="text-red-600 hover:text-red-800"
                           title="Delete"
@@ -189,10 +211,12 @@ const handleDelete = async (id: number) => {
               </tbody>
             </table>
           ) : (
-            <div className="p-6 text-center text-gray-500">No events found.</div>
+            <div className="p-6 text-center text-gray-500">
+              No events found.
+            </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
