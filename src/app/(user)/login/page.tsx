@@ -25,7 +25,8 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const response = await axios.post(`${apiUrl}login`, {
         email,
         password,
       });

@@ -25,10 +25,12 @@ interface EventResponse {
 }
 
 export default function EventsPage() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const imageUrl  = process.env.NEXT_PUBLIC_BASE_URL
   const router = useRouter();
   const [localEvents, setLocalEvents] = useState<EventItem[] | null>(null);
   const { data, loading, error } = useFetch<EventResponse>(
-    "http://127.0.0.1:8000/api/events"
+    `${apiUrl}events`
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -56,7 +58,7 @@ export default function EventsPage() {
     try {
       const token = Cookies.get("token");
 
-      await axios.delete(`http://127.0.0.1:8000/api/events/${id}`, {
+      await axios.delete(`${apiUrl}events/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -162,7 +164,7 @@ export default function EventsPage() {
                     <td className="px-4 py-3 font-medium">{index + 1}</td>
                     <td className="px-4 py-3">
                       <img
-                        src={`http://127.0.0.1:8000/storage/events/${event.image.replace(
+                        src={`${imageUrl}public/storage/events/${event.image.replace(
                           /^.*[\\/]/,
                           ""
                         )}`}

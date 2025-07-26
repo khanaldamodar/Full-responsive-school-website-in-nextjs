@@ -28,8 +28,8 @@ export default function AdminDashboard() {
     const fetchDashboard = async () => {
       try {
         const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-
-        const res = await axios.get('http://127.0.0.1:8000/api/admin/dashboard', {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        const res = await axios.get(`${apiUrl}admin/dashboard`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

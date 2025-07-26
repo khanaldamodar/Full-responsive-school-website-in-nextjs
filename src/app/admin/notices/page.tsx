@@ -24,10 +24,11 @@ interface NoticeResponse {
 
 export default function NoticesPage() {
   const router = useRouter();
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
+const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
   const [localNotices, setLocalNotices] = useState<Notice[] | null>(null);
   const { data, loading, error } = useFetch<NoticeResponse>(
-    "http://127.0.0.1:8000/api/notices"
+    `${apiUrl}notices`
   );
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -52,7 +53,7 @@ export default function NoticesPage() {
     try {
       const token = Cookies.get("token");
 
-      await axios.delete(`http://127.0.0.1:8000/api/notices/${id}`, {
+      await axios.delete(`${apiUrl}notices/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

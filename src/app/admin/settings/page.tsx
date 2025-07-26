@@ -16,6 +16,8 @@ interface SchoolData {
 }
 
 export default function SettingsPage() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
   const [logo, setLogo] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -28,14 +30,14 @@ export default function SettingsPage() {
   });
 
   const { data, loading, error, updateData } = useEdit<SchoolData>({
-    endpoint: `http://127.0.0.1:8000/api/school-information/3`, // Assuming ID=2
+    endpoint: `${apiUrl}school-information/3`, // Assuming ID=2
   });
 
   // Fetch school info on mount
   useEffect(() => {
     const fetchSchoolInfo = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/school-information');
+        const res = await axios.get(`${apiUrl}school-information`);
         const school = res.data.data[1]; // assuming the first item is the target
 
         setFormData({
@@ -48,7 +50,7 @@ export default function SettingsPage() {
         });
 
         if (school.logo) {
-          setPreview(`http://127.0.0.1:8000/${school.logo}`); // Adjust if needed
+          setPreview(`${imageUrl}public/${school.logo}`); // Adjust if needed
         }
       } catch (err) {
         console.error('Error fetching school info:', err);

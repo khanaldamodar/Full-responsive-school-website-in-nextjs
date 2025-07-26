@@ -24,7 +24,8 @@ export default function CourseListPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/courses')
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        const res = await axios.get(`${apiUrl}courses`)
         setCourses(res.data.data || res.data)
       } catch (err: any) {
         setError('Failed to fetch courses.')

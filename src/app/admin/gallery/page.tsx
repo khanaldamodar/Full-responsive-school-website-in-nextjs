@@ -20,8 +20,10 @@ interface GalleryResponse {
 }
 
 const page = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
   const { data, loading, error } = useFetch<GalleryResponse>(
-    "http://127.0.0.1:8000/api/gallery"
+    `${apiUrl}gallery`
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -230,7 +232,7 @@ const page = () => {
                         <td className="px-4 py-4">
                           <div className="relative group">
                             <img
-                              src={`http://127.0.0.1:8000/storage/gallery/images/${item.image.replace(
+                              src={`${imageUrl}public/storage/gallery/images/${item.image.replace(
                                 /^.*[\\/]/,
                                 ""
                               )}`}

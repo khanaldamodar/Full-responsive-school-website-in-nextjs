@@ -32,8 +32,10 @@ interface TeacherResponse {
 }
 
 export default function TeachersPage() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
   const [localData, setLocalData] = useState<Teacher[] | null>(null)
-  const { data, loading, error } = useFetch<TeacherResponse>('http://127.0.0.1:8000/api/teachers')
+  const { data, loading, error } = useFetch<TeacherResponse>(`${apiUrl}teachers`)
   const router = useRouter();
   
 // On first load, sync fetched data into local state
@@ -81,7 +83,7 @@ useEffect(() => {
   try {
     const token = Cookies.get('token');
 
-    await axios.delete(`http://127.0.0.1:8000/api/teachers/${id}`, {
+    await axios.delete(`${apiUrl}teachers/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -187,7 +189,7 @@ useEffect(() => {
                       <img
                         src={
                           teacher.profile_picture
-                            ? `http://127.0.0.1:8000/storage/teachers/profile_pictures/${teacher.profile_picture.replace(
+                            ? `${imageUrl}public/storage/teachers/profile_pictures/${teacher.profile_picture.replace(
                                 /^.*[\\/]/,
                                 ""
                               )}`
