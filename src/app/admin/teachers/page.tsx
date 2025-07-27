@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
-
 interface Subject {
   id: number;
   name: string;
@@ -32,18 +31,20 @@ interface TeacherResponse {
 }
 
 export default function TeachersPage() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
-  const [localData, setLocalData] = useState<Teacher[] | null>(null)
-  const { data, loading, error } = useFetch<TeacherResponse>(`${apiUrl}teachers`)
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const [localData, setLocalData] = useState<Teacher[] | null>(null);
+  const { data, loading, error } = useFetch<TeacherResponse>(
+    `${apiUrl}teachers`
+  );
   const router = useRouter();
-  
-// On first load, sync fetched data into local state
-useEffect(() => {
-  if (data?.data && !localData) {
-    setLocalData(data.data)
-  }
-}, [data])
+
+  // On first load, sync fetched data into local state
+  useEffect(() => {
+    if (data?.data && !localData) {
+      setLocalData(data.data);
+    }
+  }, [data]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -55,8 +56,6 @@ useEffect(() => {
       setSelectedItems([]);
     }
   };
-
-
 
   const handleSelectItem = (id: number, checked: boolean) => {
     setSelectedItems(
@@ -73,34 +72,33 @@ useEffect(() => {
       )
   );
 
-
-
   const handleDelete = async (id: number) => {
-  const confirmDelete = confirm('Are you sure you want to delete this teacher?')
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this teacher?"
+    );
 
-  if (!confirmDelete) return
+    if (!confirmDelete) return;
 
-  try {
-    const token = Cookies.get('token');
+    try {
+      const token = Cookies.get("token");
 
-    await axios.delete(`${apiUrl}teachers/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+      await axios.delete(`${apiUrl}teachers/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Remove deleted teacher from local state
+      if (data) {
+        const updated = data.data.filter((t) => t.id !== id);
+        setSelectedItems((prev) => prev.filter((item) => item !== id));
+        setLocalData({ ...data, data: updated }); // Update local state
       }
-    })
-
-    // Remove deleted teacher from local state
-    if (data) {
-      const updated = data.data.filter(t => t.id !== id)
-      setSelectedItems(prev => prev.filter(item => item !== id))
-      setLocalData({ ...data, data: updated }) // Update local state
+    } catch (err) {
+      console.error("Failed to delete teacher:", err);
+      alert("Failed to delete teacher. Please try again.");
     }
-  } catch (err) {
-    console.error('Failed to delete teacher:', err)
-    alert('Failed to delete teacher. Please try again.')
-  }
-}
-
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen font-poppins">
@@ -113,7 +111,10 @@ useEffect(() => {
               List of all teachers with assigned subjects
             </p>
           </div>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition" onClick={()=> router.push("/admin/teachers/add")}>
+          <button
+            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
+            onClick={() => router.push("/admin/teachers/add")}
+          >
             <Plus className="w-5 h-5" />
             Add Teacher
           </button>
@@ -189,10 +190,7 @@ useEffect(() => {
                       <img
                         src={
                           teacher.profile_picture
-                            ? `${imageUrl}public/storage/teachers/profile_pictures/${teacher.profile_picture.replace(
-                                /^.*[\\/]/,
-                                ""
-                              )}`
+                            ? `${imageUrl}public/storage/${teacher.profile_picture}`
                             : ""
                         }
                         alt={teacher.name}
@@ -218,7 +216,9 @@ useEffect(() => {
                         <button
                           className="text-green-600 hover:text-green-800"
                           title="Edit"
-                          onClick={()=> router.push(`/admin/teachers/add?id=${teacher.id}`)}
+                          onClick={() =>
+                            router.push(`/admin/teachers/add?id=${teacher.id}`)
+                          }
                         >
                           <Edit className="w-4 h-4" />
                         </button>
