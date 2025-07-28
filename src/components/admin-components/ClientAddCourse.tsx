@@ -26,11 +26,13 @@ export default function AddCoursePage() {
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [loading, setLoading] = useState(true)
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  
 
   // Fetch all teachers
   useEffect(() => {
     axios
-      .get('http://localhost:8000/api/teachers')
+      .get(`${apiUrl}teachers`)
       .then((res) => {
         setTeachers(res.data.data || res.data) // adapt if needed
       })
@@ -40,7 +42,7 @@ export default function AddCoursePage() {
   useEffect(() => {
     if (courseId) {
       axios
-        .get(`http://localhost:8000/api/courses/${courseId}`)
+        .get(`${apiUrl}courses/${courseId}`)
         .then((res) => {
           const data = res.data.data || res.data
           setForm({
@@ -87,8 +89,8 @@ export default function AddCoursePage() {
     try {
       const token = Cookies.get('token')
       const url = courseId
-        ? `http://localhost:8000/api/courses/${courseId}`
-        : 'http://localhost:8000/api/courses'
+        ? `${apiUrl}courses/${courseId}`
+        : `${apiUrl}courses`
 
       const method = courseId ? 'put' : 'post'
 
