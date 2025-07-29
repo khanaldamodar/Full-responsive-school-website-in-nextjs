@@ -28,24 +28,16 @@ const page = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
-  const handleView = (id: number) => {
-    console.log("View item:", id);
-    // Add your view logic here
-  };
-
-  const handleEdit = (id: number) => {
-    console.log("Edit item:", id);
-    // Add your edit logic here
-  };
 
   const handleDelete = async (id: number) => {
     const confirmDelete = confirm("Are you sure you want to delete this item?");
     if (!confirmDelete) return;
 
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
       const token = Cookies.get("token");
       const res = await axios.delete(
-        `http://127.0.0.1:8000/api/gallery/${id}`,
+        `${apiUrl}gallery/${id}`,
         {
           headers: {
             Accept: "application/json",

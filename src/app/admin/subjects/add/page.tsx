@@ -23,7 +23,8 @@ export default function AddSubjectPage() {
     }
 
     try {
-      const response = await post('http://127.0.0.1:8000/api/subjects', subject)
+       const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const response = await post(`${apiUrl}subjects`, subject)
       
       if(response?.status !== 201) {
         throw new Error('Failed to add subject')

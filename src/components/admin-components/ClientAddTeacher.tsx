@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useSearchParams, useRouter } from "next/navigation";
+import {Bounce, toast, ToastContainer} from "react-toastify"
 
 export default function AddTeacherPage() {
   const searchParams = useSearchParams();
@@ -128,12 +129,15 @@ export default function AddTeacherPage() {
         await axios.post(`${apiUrl}teachers/${teacherId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        alert("Teacher updated successfully!");
+        // alert("Teacher updated successfully!");
+        toast.success("Teacher updated successfully!")
+        
       } else {
         await axios.post(`${apiUrl}teachers`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        alert("Teacher created successfully!");
+        // alert("Teacher created successfully!");
+        toast.success("Teacher Created successfully!")
       }
 
       router.push("/admin/teachers");
@@ -284,6 +288,20 @@ export default function AddTeacherPage() {
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
       </form>
+
+       <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              transition={Bounce}
+            />
     </div>
   );
 }

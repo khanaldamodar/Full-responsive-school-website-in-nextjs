@@ -2,53 +2,52 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // import Cookies from "js-cookie";
-
-  // Inside your component
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
 
     const existingToken = Cookies.get("token");
 
     if (existingToken) {
-      alert("You are already logged in.");
+      toast.info("You are already logged in.");
       return;
     }
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.post(`${apiUrl}login`, {
         email,
         password,
       });
 
-
       const token = response.data.token;
 
       if (token) {
-        Cookies.set("token", token, { expires: 1 }); // store token for 7 days
-        alert("Login successful!");
+        Cookies.set("token", token, { expires: 1 });
+        toast.success("Login successful!");
 
-        // Optional: store user info if needed
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        // Redirect
-        window.location.href = "/admin/dashboard";
+        setTimeout(() => {
+          window.location.href = "/admin/dashboard";
+        }, 1500);
       } else {
-        alert("Login failed. Token not received.");
+        toast.error("Login failed. Token not received.");
       }
     } catch (err) {
       console.error("Login failed:", err);
-      alert("Invalid credentials or server error.");
+      toast.error("Invalid credentials or server error");
     }
   };
 
@@ -93,7 +92,7 @@ const Login = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               placeholder="Enter your password"
             />
-          </div> 
+          </div>
 
           <button
             type="submit"
@@ -103,9 +102,23 @@ const Login = () => {
           </button>
         </form>
       </div>
+
+      {/* Add ToastContainer to show toasts */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };
-
 
 export default Login;

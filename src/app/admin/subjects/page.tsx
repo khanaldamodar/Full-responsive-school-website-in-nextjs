@@ -17,7 +17,8 @@ interface SubjectResponse {
 }
 
 export default function SubjectListPage() {
-  const { data, loading, error } = useFetch<SubjectResponse>('http://127.0.0.1:8000/api/subjects')
+   const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const { data, loading, error } = useFetch<SubjectResponse>(`${apiUrl}subjects`)
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredSubjects = data?.data.filter((subject) =>

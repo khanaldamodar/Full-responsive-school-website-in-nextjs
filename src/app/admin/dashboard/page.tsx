@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useEffect, useState } from "react";
+import axios from "axios";
 import {
   UserGroupIcon,
   BookOpenIcon,
@@ -9,73 +9,77 @@ import {
   MegaphoneIcon,
   BuildingLibraryIcon,
   ArrowRightIcon,
-} from '@heroicons/react/24/outline'
-import Link from 'next/link'
+} from "@heroicons/react/24/outline";
+import Link from "next/link";
+import Loader from "@/components/global/Loader";
 
 interface DashboardStats {
-  teachers: number
-  students: number
-  courses: number
-  events: number
-  notices: number
-  recent_activities?: string[]
+  teachers: number;
+  students: number;
+  courses: number;
+  events: number;
+  notices: number;
+  recent_activities?: string[];
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1]
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        const token = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("token="))
+          ?.split("=")[1];
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const res = await axios.get(`${apiUrl}admin/dashboard`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        setStats(res.data.data)
+        setStats(res.data.data);
       } catch (err) {
-        console.error('Dashboard fetch error', err)
+        console.error("Dashboard fetch error", err);
       }
-    }
+    };
 
-    fetchDashboard()
-  }, [])
+    fetchDashboard();
+  }, []);
 
-  if (!stats) return <p>Loading...</p>
+  if (!stats) return <Loader />;
 
   const statsWithCounts = [
     {
-      name: 'Teachers',
+      name: "Teachers",
       count: stats.teachers,
       icon: UserGroupIcon,
-      link: '/admin/teachers',
-      color: 'bg-blue-100 text-blue-700',
+      link: "/admin/teachers",
+      color: "bg-blue-100 text-blue-700",
     },
     {
-      name: 'Courses',
+      name: "Courses",
       count: stats.courses,
       icon: BookOpenIcon,
-      link: '/admin/courses',
-      color: 'bg-purple-100 text-purple-700',
+      link: "/admin/courses",
+      color: "bg-purple-100 text-purple-700",
     },
     {
-      name: 'Events',
+      name: "Events",
       count: stats.events,
       icon: CalendarIcon,
-      link: '/admin/events',
-      color: 'bg-orange-100 text-orange-700',
+      link: "/admin/events",
+      color: "bg-orange-100 text-orange-700",
     },
     {
-      name: 'Notices',
+      name: "Notices",
       count: stats.notices,
       icon: MegaphoneIcon,
-      link: '/admin/notices',
-      color: 'bg-pink-100 text-pink-700',
+      link: "/admin/notices",
+      color: "bg-pink-100 text-pink-700",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 font-poppins">
@@ -83,7 +87,9 @@ export default function AdminDashboard() {
         {/* Welcome Section */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Welcome, Admin</h1>
-          <p className="text-gray-600">Manage your school's content, events, and staff here.</p>
+          <p className="text-gray-600">
+            Manage your school's content, events, and staff here.
+          </p>
         </div>
 
         {/* Stats Cards */}
@@ -95,7 +101,9 @@ export default function AdminDashboard() {
                   <h2 className="text-sm font-medium text-gray-500">{name}</h2>
                   <p className="text-2xl font-bold text-gray-900">{count}</p>
                 </div>
-                <div className={`p-3 rounded-full ${color} transition duration-200`}>
+                <div
+                  className={`p-3 rounded-full ${color} transition duration-200`}
+                >
                   <Icon className="w-6 h-6" />
                 </div>
               </div>
@@ -105,26 +113,28 @@ export default function AdminDashboard() {
 
         {/* Quick Shortcuts */}
         <div className="bg-white p-6 rounded-xl shadow-md mb-10">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Quick Shortcuts</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">
+            Quick Shortcuts
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { name: 'Add Teacher', link: '/admin/teachers/add' },
-              { name: 'Add Event', link: '/admin/events/add' },
-              { name: 'Add Notice', link: '/admin/notices/add' },
-              { name: 'Upload Image', link: '/admin/gallery/add' },
+              { name: "Add Teacher", link: "/admin/teachers/add" },
+              { name: "Add Event", link: "/admin/events/add" },
+              { name: "Add Notice", link: "/admin/notices/add" },
+              { name: "Upload Image", link: "/admin/gallery/add" },
             ].map((item) => (
               <Link key={item.name} href={item.link}>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition cursor-pointer">
-                  <span className="text-sm font-medium text-gray-800">{item.name}</span>
+                  <span className="text-sm font-medium text-gray-800">
+                    {item.name}
+                  </span>
                   <ArrowRightIcon className="w-4 h-4 text-gray-500" />
                 </div>
               </Link>
             ))}
           </div>
         </div>
-
-       
       </div>
     </div>
-  )
+  );
 }

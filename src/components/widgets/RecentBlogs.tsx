@@ -14,6 +14,7 @@ interface Event {
 }
 
 const RecentBlogs = () => {
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
   const [events, setEvents] = useState<Event[]>([]);
 
   const generateSlug = (text: string) =>
@@ -62,7 +63,7 @@ const RecentBlogs = () => {
             <div className="flex gap-4 py-3">
               <div className="h-16 w-16 flex-shrink-0 rounded overflow-hidden">
                 <Image
-                  src={`http://localhost:8000/storage/${item.image}`}
+                  src={`${imageUrl}public/storage/${item.image}`}
                   alt={item.title}
                   width={64}
                   height={64}

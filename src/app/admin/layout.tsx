@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "../globals.css";
 import Sidebar from "@/components/admin-components/Sidebar";
 import ClientAuthGuard from "@/components/admin-components/ClientAuthGuard";
-import { Metadata } from "next";
 
 export const metadata = {
   title: "Admin Panel",
@@ -39,7 +38,11 @@ export default function RootLayout({
         <div className="flex flex-col md:flex-row h-screen md:overflow-hidden">
           <Sidebar />
           <main className="flex-1 overflow-y-auto bg-gray-50">
-            <ClientAuthGuard>{children}</ClientAuthGuard>
+            <ClientAuthGuard>
+              {children}
+            
+              
+              </ClientAuthGuard>
           </main>
         </div>
       </body>

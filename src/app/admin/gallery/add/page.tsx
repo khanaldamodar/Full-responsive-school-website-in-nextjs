@@ -33,7 +33,8 @@ export default function AddImagePage() {
     formData.append('image', image)
 
     try {
-      const res = await post('http://127.0.0.1:8000/api/gallery', formData)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const res = await post(`${apiUrl}gallery`, formData)
       alert('Image uploaded successfully!')
     
     } catch (err: any) {

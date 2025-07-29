@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   HomeIcon,
   UserGroupIcon,
@@ -13,6 +13,7 @@ import {
   PlusIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+import Cookies from "js-cookie";
 
 const adminEmail = "admin@school.edu.np";
 
@@ -56,6 +57,7 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const route = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState<{ [key: string]: boolean }>(
     {}
@@ -67,7 +69,10 @@ export default function Sidebar() {
   };
 
   const handleLogout = () => {
-    alert("Logged out");
+    const val =  Cookies.remove("token")
+    route.push("/login")
+    console.log(val)
+    
   };
 
   const handleLinkClick = () => {
