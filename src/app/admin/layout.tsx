@@ -6,10 +6,9 @@ import ClientAuthGuard from "@/components/admin-components/ClientAuthGuard";
 import { Metadata } from "next";
 
 export const metadata = {
-  title: 'Admin Panel',
-  description: 'Learn more about our team and mission.',
-}
-
+  title: "Admin Panel",
+  description: "Learn more about our team and mission.",
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,14 +37,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         <div className="flex flex-col md:flex-row h-screen md:overflow-hidden">
-  <Sidebar />
-  <main className="flex-1 overflow-y-auto bg-gray-50">
-    <ClientAuthGuard>
-      {children}
-    </ClientAuthGuard>
-  </main>
-</div>
-
+          <Sidebar />
+          <main className="flex-1 overflow-y-auto bg-gray-50">
+            <ClientAuthGuard>{children}</ClientAuthGuard>
+          </main>
+        </div>
       </body>
     </html>
   );
