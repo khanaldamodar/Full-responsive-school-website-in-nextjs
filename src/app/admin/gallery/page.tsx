@@ -271,20 +271,6 @@ const page = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-center space-x-2">
                             <button
-                              onClick={() => handleView(item.id)}
-                              className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200"
-                              title="View"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleEdit(item.id)}
-                              className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors duration-200"
-                              title="Edit"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </button>
-                            <button
                               onClick={() => handleDelete(item.id)}
                               className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
                               title="Delete"

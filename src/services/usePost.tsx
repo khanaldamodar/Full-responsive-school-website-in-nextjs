@@ -18,9 +18,10 @@ export function usePost<T = unknown>() {
     setError(null);
 
     try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
       const token = Cookies.get("token"); // Sanctum token stored in cookies
 
-      await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie", {
+      await axios.get(`${baseUrl}sanctum/csrf-cookie`, {
         withCredentials: true,
       })
 

@@ -24,6 +24,8 @@ export default function AddEventPage() {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     if (eventId) {
@@ -34,7 +36,8 @@ export default function AddEventPage() {
 
   const fetchEventData = async (id: string) => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/events/${id}`)
+      
+      const res = await axios.get(`${apiUrl}events/${id}`)
       const data = res.data?.data
       if (data) {
         setTitle(data.title)
@@ -43,7 +46,7 @@ export default function AddEventPage() {
         setLocation(data.location || '')
         setOrganizer(data.organizer || '')
         setAboutEvent(data.about_event || '')
-        setPreview(`http://localhost:8000/storage/events/${data.image.replace(/^.*[\\/]/, '')}`)
+        setPreview(`${imageUrl}public/storage/events/${data.image.replace(/^.*[\\/]/, '')}`)
       }
     } catch (err) {
       console.error('Failed to fetch event data', err)
@@ -79,14 +82,14 @@ export default function AddEventPage() {
       const token = Cookies.get('token')
 
       if (isEditMode && eventId) {
-        await axios.post(`http://localhost:8000/api/events/${eventId}?_method=PUT`, formData, {
+        await axios.post(`${apiUrl}events/${eventId}?_method=PUT`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
         })
       } else {
-        await axios.post('http://localhost:8000/api/events', formData, {
+        await axios.post(`${apiUrl}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',

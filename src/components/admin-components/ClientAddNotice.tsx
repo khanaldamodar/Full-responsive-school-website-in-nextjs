@@ -18,11 +18,14 @@ const isEditMode = !!noticeId;
   const [image, setImage] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
 
   const { post, loading, error } = usePost()
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+    console.log(file)
     if (file) {
       setImage(file)
       setPreview(URL.createObjectURL(file))
@@ -45,9 +48,9 @@ const isEditMode = !!noticeId;
     if (isEditMode) {
       // Use PUT override (since formData doesn't support PUT directly)
       formData.append("_method", "PUT");
-      await axios.post(`http://127.0.0.1:8000/api/notices/${noticeId}`, formData);
+      await axios.post(`${apiUrl}notices/${noticeId}`, formData);
     } else {
-      await post("http://127.0.0.1:8000/api/notices", formData);
+      await post(`${apiUrl}notices`, formData);
     }
 
     setSuccess(true);
@@ -73,11 +76,16 @@ const isEditMode = !!noticeId;
   const fetchNotice = async () => {
     if (noticeId) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/notices/${noticeId}`);
+        const response = await axios.get(`${apiUrl}notices/${noticeId}`);
         const { title, description } = response.data.data;
         setTitle(title);
         setDescription(description);
         // Note: You cannot preload image in file input due to browser restrictions
+
+        if(image){
+          setPreview(`${imageUrl}public/storage/${image}`)
+          console.log(image)
+        }
       } catch (err) {
         console.error("Failed to fetch notice:", err);
       }
