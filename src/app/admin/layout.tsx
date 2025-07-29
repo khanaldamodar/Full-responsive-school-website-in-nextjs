@@ -37,14 +37,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
-        <div className="md:flex h-screen overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto bg-gray-50">
-            <ClientAuthGuard>
-              {children}
-            </ClientAuthGuard>
-          </main>
-        </div>
+        <div className="flex flex-col md:flex-row h-screen md:overflow-hidden">
+  <Sidebar />
+  <main className="flex-1 overflow-y-auto bg-gray-50">
+    <ClientAuthGuard>
+      {children}
+    </ClientAuthGuard>
+  </main>
+</div>
+
       </body>
     </html>
   );
