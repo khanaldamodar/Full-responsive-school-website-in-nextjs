@@ -29,7 +29,7 @@ const NoticesPage: React.FC = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL
   
   useEffect(() => {
     const fetchNotices = async () => {
@@ -71,7 +71,7 @@ const NoticesPage: React.FC = () => {
   return (
     <div className="py-10 font-poppins">
       <Banner title="Notices" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-20">
         <div className="flex gap-6 overflow-x-auto pb-4">
           {notices.length > 0 ? (
             notices.map((notice) => (
@@ -80,7 +80,7 @@ const NoticesPage: React.FC = () => {
                 title={notice.title}
                 date={dayjs(notice.notice_date).format("YYYY-MM-DD")}
                 description={notice.description}
-                image={notice.image ? `${imageUrl}public/storage/${notice.image}` : undefined}
+                image={notice.image ? `${imageUrl}${notice.image}` : undefined}
               />
             ))
           ) : (

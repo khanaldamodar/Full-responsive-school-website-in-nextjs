@@ -21,7 +21,7 @@ const NoticeDetailPage = () => {
   const [notice, setNotice] = useState<Notice | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 
   useEffect(() => {
     const fetchNotice = async () => {
@@ -61,8 +61,7 @@ const NoticeDetailPage = () => {
           <div className="relative w-full h-64 mb-10">
             <Image
               fill
-              unoptimized
-              src={`${imageUrl}public/storage/${notice.image}`}
+              src={`${imageUrl}${notice.image}`}
               alt={notice.title}
               className="object-cover rounded-lg"
             />
