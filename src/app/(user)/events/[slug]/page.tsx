@@ -28,7 +28,7 @@ const IndividualEventPage = () => {
 
   const params = useParams();
   const slug = params.slug?.toString();
-  const imageUrl =process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl =process.env.NEXT_PUBLIC_IMAGE_URL;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -79,7 +79,7 @@ const IndividualEventPage = () => {
 
         <div className="relative w-full h-72 md:h-96 mb-8">
           <Image
-            src={`${imageUrl}public/storage/${event.image}`}
+            src={`${imageUrl}${event.image}`}
             alt={event.title}
             fill
             unoptimized

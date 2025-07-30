@@ -25,7 +25,7 @@ const EventsPage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const imageUrl =process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl =process.env.NEXT_PUBLIC_IMAGE_URL
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -80,7 +80,7 @@ const EventsPage: React.FC = () => {
               date={dayjs(event.event_date).format("YYYY-MM-DD")}
               description={event.description}
               location={event.location}
-              image={`${imageUrl}public/storage/${event.image}`}
+              image={`${imageUrl}${event.image}`}
             />
           ))
         ) : (
