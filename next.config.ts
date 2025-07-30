@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    domains:['localhost','127.0.0.1:8000']
+    domains:['localhost','127.0.0.1:8000','school.shaktatechnology.com']
   },
 };
 
