@@ -67,7 +67,7 @@ const NewsSlider = () => {
               <img
               src={`${imageUrl}${event.image}`}
               alt={event.title}
-              className="w-full h-48 object-cover"
+              className="w-auto  object-cover aspect-square"
               />
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{event.title}</h3>

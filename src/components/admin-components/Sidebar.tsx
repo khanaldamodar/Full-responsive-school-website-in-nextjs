@@ -69,11 +69,12 @@ export default function Sidebar() {
   };
 
   const handleLogout = () => {
-    const val =  Cookies.remove("token")
-    route.push("/login")
-    console.log(val)
-    
-  };
+  Cookies.remove("token");
+  setTimeout(() => {
+    route.replace("/login");
+  }, 50); // small delay for cookie flush
+};
+
 
   const handleLinkClick = () => {
     if (window.innerWidth < 768) {
