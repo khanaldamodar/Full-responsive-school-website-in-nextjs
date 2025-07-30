@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Heading from "../global/Heading";
 import { Newspaper } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Event {
   id: number;
@@ -11,8 +12,15 @@ interface Event {
   image: string;
 }
 
+const generateSlug = (text: string) =>
+  text.toLowerCase().replace
+
+
 const NewsSlider = () => {
+
+  const router = useRouter()
   const [events, setEvents] = useState<Event[]>([]);
+  
 
   const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
   useEffect(() => {
@@ -45,15 +53,29 @@ const NewsSlider = () => {
       <div className="px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event, index) => (
-            <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden h-full">
+            <div
+              key={index}
+              className="bg-white shadow-md rounded-lg overflow-hidden h-full"
+              onClick={() => {
+              const slug = event.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)+/g, '');
+              window.location.href = `/events/${slug}`;
+              }}
+            >
               <img
-                src={`${imageUrl}public/storage/${event.image}`}
-                alt={event.title}
-                className="w-full h-48 object-cover"
+              src={`${imageUrl}public/storage/${event.image}`}
+              alt={event.title}
+              className="w-full h-48 object-cover"
               />
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{event.title}</h3>
-                <p className="text-sm text-gray-600">{event.description}</p>
+                <p className="text-sm text-gray-600">
+                  {event.description.length > 150
+                  ? `${event.description.slice(0, 150)}...`
+                  : event.description}
+                </p>
               </div>
             </div>
           ))}

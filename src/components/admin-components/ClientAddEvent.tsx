@@ -89,7 +89,7 @@ export default function AddEventPage() {
           },
         })
       } else {
-        await axios.post(`${apiUrl}`, formData, {
+        await axios.post(`${apiUrl}events`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',

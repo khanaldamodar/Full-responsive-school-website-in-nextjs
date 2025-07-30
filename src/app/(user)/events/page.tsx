@@ -32,7 +32,7 @@ const EventsPage: React.FC = () => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const result = await axios.get<EventApiResponse>(`${apiUrl}events`);
         if (result.data.status && result.data.data) {
-          setEvents(result.data.data);
+          setEvents(result.data.data); 
         } else {
           setError("Failed to fetch events");
         }
