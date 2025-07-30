@@ -16,7 +16,7 @@ export default function AddTeacherPage() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const [formData, setFormData] = useState({
@@ -60,7 +60,7 @@ export default function AddTeacherPage() {
           });
 
           if (teacher.profile_picture) {
-            setPreview(`${imageUrl}public/storage/${teacher.profile_picture}`);
+            setPreview(`${imageUrl}${teacher.profile_picture}`);
           }
         } catch (err) {
           console.error("Error fetching teacher data:", err);

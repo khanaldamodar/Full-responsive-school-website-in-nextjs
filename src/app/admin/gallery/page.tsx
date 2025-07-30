@@ -5,6 +5,7 @@ import { Eye, Edit, Trash2, Plus, Search, Filter } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 interface GalleryItem {
   id: number;
@@ -20,8 +21,9 @@ interface GalleryResponse {
 }
 
 const page = () => {
+  const router = useRouter();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL
   const { data, loading, error } = useFetch<GalleryResponse>(
     `${apiUrl}gallery`
   );
@@ -98,7 +100,7 @@ const page = () => {
                 Manage your gallery items and media content
               </p>
             </div>
-            <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1" onClick={() => router.push('/admin/gallery/add')}>
               <Plus className="w-5 h-5 mr-2" />
               Add New Item
             </button>
@@ -224,7 +226,7 @@ const page = () => {
                         <td className="px-4 py-4">
                           <div className="relative group">
                             <img
-                              src={`${imageUrl}public/storage/gallery/images/${item.image.replace(
+                              src={`${imageUrl}gallery/images/${item.image.replace(
                                 /^.*[\\/]/,
                                 ""
                               )}`}

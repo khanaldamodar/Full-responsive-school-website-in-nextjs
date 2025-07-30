@@ -32,7 +32,7 @@ interface TeacherResponse {
 
 export default function TeachersPage() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
   const [localData, setLocalData] = useState<Teacher[] | null>(null);
   const { data, loading, error } = useFetch<TeacherResponse>(
     `${apiUrl}teachers`
@@ -190,7 +190,7 @@ export default function TeachersPage() {
                       <img
                         src={
                           teacher.profile_picture
-                            ? `${imageUrl}public/storage/${teacher.profile_picture}`
+                            ? `${imageUrl}${teacher.profile_picture}`
                             : ""
                         }
                         alt={teacher.name}

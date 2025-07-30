@@ -16,7 +16,7 @@ const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const imageUrl =process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl =process.env.NEXT_PUBLIC_IMAGE_URL
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -48,7 +48,7 @@ const Gallery = () => {
 
   const getImageUrl = (imagePath: string) => {
     // Adjust as per your Laravel storage structure
-    return `${imageUrl}public/storage/${imagePath}`;
+    return `${imageUrl}${imagePath}`;
   };
 
   return (

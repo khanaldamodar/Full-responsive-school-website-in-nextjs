@@ -22,7 +22,7 @@ const NewsSlider = () => {
   const [events, setEvents] = useState<Event[]>([]);
   
 
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -65,7 +65,7 @@ const NewsSlider = () => {
               }}
             >
               <img
-              src={`${imageUrl}public/storage/${event.image}`}
+              src={`${imageUrl}${event.image}`}
               alt={event.title}
               className="w-full h-48 object-cover"
               />

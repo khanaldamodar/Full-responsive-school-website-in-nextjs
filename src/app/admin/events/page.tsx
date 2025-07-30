@@ -26,7 +26,7 @@ interface EventResponse {
 
 export default function EventsPage() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
-  const imageUrl  = process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl  = process.env.NEXT_PUBLIC_IMAGE_URL
   const router = useRouter();
   const [localEvents, setLocalEvents] = useState<EventItem[] | null>(null);
   const { data, loading, error } = useFetch<EventResponse>(
@@ -164,7 +164,7 @@ export default function EventsPage() {
                     <td className="px-4 py-3 font-medium">{index + 1}</td>
                     <td className="px-4 py-3">
                       <img
-                        src={`${imageUrl}public/storage/events/${event.image.replace(
+                        src={`${imageUrl}events/${event.image.replace(
                           /^.*[\\/]/,
                           ""
                         )}`}

@@ -41,7 +41,7 @@ export default function TeachersPage() {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 
   // Fetch teachers data
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function TeachersPage() {
     if (!profilePicture) {
       return '/default-avatar.png' // Fallback image
     }
-    return `${imageUrl}public/storage/${profilePicture}`
+    return `${imageUrl}${profilePicture}`
   }
 
   // Create slug from teacher name

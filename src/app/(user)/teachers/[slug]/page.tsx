@@ -52,7 +52,7 @@ export default function TeacherDetailPage() {
   const router = useRouter()
   
   const teacherId = searchParams.get('id')
-  const imageUrl = process.env.NEXT_PUBLIC_BASE_URL
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 
   // Fetch individual teacher data
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function TeacherDetailPage() {
     if (!profilePicture) {
       return '/default-avatar.png'
     }
-    return `${imageUrl}public/storage/${profilePicture}`
+    return `${imageUrl}${profilePicture}`
   }
 
   // Format date helper
