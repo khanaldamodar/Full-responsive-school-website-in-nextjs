@@ -36,7 +36,7 @@ const IndividualEventCard = ({
       onClick={handleClick}
       className="cursor-pointer rounded-xl overflow-hidden shadow-lg transition-transform transform hover:scale-105 duration-300 w-full max-w-sm bg-white"
     >
-      <div className="relative w-full h-60">
+      <div className="relative w-auto  aspect-square">
         <Image
           src={image}
           alt={title}

@@ -19,7 +19,7 @@ const IndividualNoticeCard: React.FC<NoticeCardProps> = ({ image, title, date, d
     <Link href={`/notices/${slug}`}>
       <div className="cursor-pointer bg-white rounded  overflow-hidden transition-transform hover:shadow-lg group font-poppins">
         {/* Image */}
-        <div className="relative w-80 h-50 overflow-hidden">
+        <div className="relative w-80 overflow-hidden aspect-square">
           <Image
             src={`${image}`}
             alt={title}

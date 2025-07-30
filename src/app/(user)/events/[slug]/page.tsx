@@ -77,13 +77,13 @@ const IndividualEventPage = () => {
           {dayjs(event.event_date).format('YYYY-MM-DD')}
         </p>
 
-        <div className="relative w-full h-72 md:h-96 mb-8">
+        <div className="relative w-full md:h-96 mb-8 aspect-square">
           <Image
             src={`${imageUrl}${event.image}`}
             alt={event.title}
             fill
             unoptimized
-            className="object-cover rounded-lg"
+            className="object-contain rounded-lg"
           />
         </div>
 

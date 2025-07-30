@@ -58,12 +58,12 @@ const NoticeDetailPage = () => {
         </div>
 
         {notice.image && (
-          <div className="relative w-full h-64 mb-10">
+          <div className="relative w-full  mb-10 aspect-[16/9]">
             <Image
               fill
               src={`${imageUrl}${notice.image}`}
               alt={notice.title}
-              className="object-cover rounded-lg"
+              className="object-contain rounded-lg"
             />
           </div>
         )}
