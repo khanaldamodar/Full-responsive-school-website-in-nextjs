@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'
 import { UploadCloud } from 'lucide-react'
+import axios from 'axios'
+import Cookies from 'js-cookie'
 
 const AdmissionForm = () => {
   const [formData, setFormData] = useState({
@@ -30,42 +32,50 @@ const AdmissionForm = () => {
       setPreview(URL.createObjectURL(file))
     }
   }
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const data = new FormData();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const data = new FormData()
-    Object.entries(formData).forEach(([key, value]) => data.append(key, value))
-    if (photo) data.append('photo', photo)
+  // Match backend field names
+  data.append('student_name', formData.name);
+  data.append('class', formData.class);
+  data.append('dob', formData.dob);
+  data.append('gender', formData.gender);
+  data.append('address', formData.address);
+  data.append('guardian_name', formData.parentName);
+  data.append('phone', formData.contact);
+  data.append('email', formData.email);
 
-    try {
-      // Replace URL with your backend endpoint
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (photo) data.append('profile', photo);
 
-      const res = await fetch(`${apiUrl}admissions`, {
-        method: 'POST',
-        body: data,
-      })
+  try {
+    const res = await axios.post('http://localhost:8000/api/admission', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        // 'Authorization': `Bearer ${Cookies.get('token')}` // ← only if using auth
+      },
+    });
 
-      const result = await res.json()
-      if (result.status) {
-        setSubmitted(true)
-        setFormData({
-          name: '',
-          class: '',
-          dob: '',
-          gender: '',
-          address: '',
-          parentName: '',
-          contact: '',
-          email: '',
-        })
-        setPhoto(null)
-        setPreview(null)
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error)
+    if (res.data.status) {
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        class: '',
+        dob: '',
+        gender: '',
+        address: '',
+        parentName: '',
+        contact: '',
+        email: '',
+      });
+      setPhoto(null);
+      setPreview(null);
     }
+  } catch (error: any) {
+    console.error('Error submitting form:', error.response?.data || error);
   }
+};
+
 
   return (
     <div className="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-xl mt-30 font-poppins lg:my-40">

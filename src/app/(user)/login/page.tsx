@@ -26,10 +26,9 @@ const Login = () => {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const response = await axios.post(`${apiUrl}login`, {
-        email,
-        password,
-      });
+
+
+      const response = await axios.post(`${apiUrl}login`, {email,password});
 
       const token = response.data.token;
 

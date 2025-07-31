@@ -47,17 +47,29 @@ const menuItems = [
     icon: BookOpenIcon,
     subItems: [{ name: "Add Notice", href: "/admin/notices/add" }],
   },
+
   {
     name: "Gallery",
     href: "/admin/gallery",
     icon: BookOpenIcon,
     subItems: [{ name: "Add Image", href: "/admin/gallery/add" }],
   },
+  {
+    name: "Admissions",
+    href: "/admin/admissions",
+    icon: BookOpenIcon,
+  },
+  {
+    name: "Users",
+    href: "/admin/register",
+    icon: BookOpenIcon,
+    subItems: [{ name: "Add Users", href: "/admin/users/add" }],
+  },
   { name: "Settings", href: "/admin/settings", icon: Cog6ToothIcon },
 ];
 
 export default function Sidebar() {
-  const route = useRouter()
+  const route = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState<{ [key: string]: boolean }>(
     {}
@@ -69,12 +81,11 @@ export default function Sidebar() {
   };
 
   const handleLogout = () => {
-  Cookies.remove("token");
-  setTimeout(() => {
-    route.replace("/login");
-  }, 50); // small delay for cookie flush
-};
-
+    Cookies.remove("token");
+    setTimeout(() => {
+      route.replace("/login");
+    }, 50); // small delay for cookie flush
+  };
 
   const handleLinkClick = () => {
     if (window.innerWidth < 768) {
