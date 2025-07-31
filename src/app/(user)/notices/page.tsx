@@ -38,7 +38,6 @@ const NoticesPage: React.FC = () => {
         const result = await axios.get<NoticeApiResponse>(`${apiUrl}notices`);
 
         if (result.data.status && result.data.data) {
-          console.log(result.data)
           setNotices(result.data.data);
         } else {
           setError("Failed to fetch notices");

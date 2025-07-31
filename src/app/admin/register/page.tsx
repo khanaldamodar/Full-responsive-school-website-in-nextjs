@@ -37,6 +37,7 @@ export default function UsersTable() {
   });
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
   // Mock data for demonstration (replace with actual API call)
   useEffect(() => {
@@ -46,8 +47,8 @@ export default function UsersTable() {
     setLoading(true);
     try {
       // Replace this with your actual API call
-      const token = "33|kXnzIAshmIlrKlU3y3H2v2ZKJTeQmubZwMQgEmgOa04ceb12"
-      const response = await axios.get("http://127.0.0.1:8000/api/users", {
+      const token = Cookies.get("token")
+      const response = await axios.get(`${apiUrl}users`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -83,8 +84,8 @@ export default function UsersTable() {
     
     try {
       // Replace with actual API call
-      const token = "33|kXnzIAshmIlrKlU3y3H2v2ZKJTeQmubZwMQgEmgOa04ceb12"
-      const response = await axios.put(`http://127.0.0.1:8000/api/users/${editingUser.id}`,
+      const token = Cookies.get("token")
+      const response = await axios.put(`${apiUrl}users/${editingUser.id}`,
         editFormData,
         {
         headers: {
@@ -115,8 +116,8 @@ export default function UsersTable() {
     
     try {
     //   Replace with actual API call
-    const token = "33|kXnzIAshmIlrKlU3y3H2v2ZKJTeQmubZwMQgEmgOa04ceb12"
-      const response = await axios.delete(`http://127.0.0.1:8000/api/users/${userId}`, {
+    const token = Cookies.get("token")
+      const response = await axios.delete(`${apiUrl}users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -21,6 +21,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
   // Client-side validation functions
   const validateEmail = (email: string) => {
@@ -117,7 +118,7 @@ export default function RegisterPage() {
     
     try {
       // Simulate API call (replace with actual axios call in your app)
-      const response = await fetch("http://127.0.0.1:8000/api/register", {
+      const response = await fetch(`${apiUrl}register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

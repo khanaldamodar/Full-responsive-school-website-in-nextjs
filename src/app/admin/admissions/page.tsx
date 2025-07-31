@@ -33,17 +33,17 @@ export default function AdmissionsPage() {
   const [search, setSearch] = useState<string>("");
   const [selectedAdmission, setSelectedAdmission] = useState<Admission | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 
-  // ✅ Fetch admissions
   const fetchAdmissions = async () => {
     try {
       const token = Cookies.get("token");
-      const res = await axios.get<AdmissionApiResponse>("http://127.0.0.1:8000/api/admission", {
+      const res = await axios.get<AdmissionApiResponse>(`${apiUrl}admission`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Fetched admissions:", res.data);
       setAdmissions(res.data.data);
       setFiltered(res.data.data);
     } catch (err) {
@@ -55,11 +55,11 @@ export default function AdmissionsPage() {
     fetchAdmissions();
   }, []);
 
-  // ✅ Handle delete
+ 
   const handleDelete = async (id: number) => {
     try {
-        const token = Cookies.get("token");
-      await axios.delete(`http://localhost:8000/api/admission/${id}`,{
+      const token = Cookies.get("token");
+      await axios.delete(`${apiUrl}admission/${id}`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -129,7 +129,7 @@ export default function AdmissionsPage() {
           <td className="p-2">
             {item.profile ? (
               <img
-                src={`http://localhost:8000/storage/${item.profile}`}
+                src={`${imageUrl}${item.profile}`}
                 alt="Profile"
                 className="w-10 h-10 object-cover rounded"
               />
@@ -185,7 +185,7 @@ export default function AdmissionsPage() {
                 <p><strong>Guardian:</strong> {selectedAdmission.guardian_name}</p>
                 {selectedAdmission.profile && (
                   <img
-                    src={`http://localhost:8000/storage/${selectedAdmission.profile}`}
+                    src={`${imageUrl}${selectedAdmission.profile}`}
                     alt="Profile"
                     className="mt-2 w-32 h-32 object-cover rounded"
                   />

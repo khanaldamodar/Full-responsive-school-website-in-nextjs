@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { UploadCloud } from 'lucide-react'
 import axios from 'axios'
-import Cookies from 'js-cookie'
+
 
 const AdmissionForm = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +49,8 @@ const handleSubmit = async (e: React.FormEvent) => {
   if (photo) data.append('profile', photo);
 
   try {
-    const res = await axios.post('http://localhost:8000/api/admission', data, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const res = await axios.post(`${apiUrl}admission`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
         // 'Authorization': `Bearer ${Cookies.get('token')}` // ← only if using auth

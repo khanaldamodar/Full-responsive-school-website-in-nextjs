@@ -67,7 +67,6 @@ export default function EventsPage() {
       setLocalEvents((prev) => prev?.filter((event) => event.id !== id) || []);
       setSelectedItems((prev) => prev.filter((item) => item !== id));
     } catch (err) {
-      console.error("Failed to delete event:", err);
       alert("Failed to delete event. Please try again.");
     }
   };
