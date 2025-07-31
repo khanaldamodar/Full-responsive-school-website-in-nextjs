@@ -9,10 +9,10 @@ const page = () => {
 
   <>
   <Banner title="About Us" />
-    <div className='flex flex-col lg:flex-row justify-between px-5 lg:px-40 lg:py-40'>
+    <div className='flex flex-col lg:flex-row justify-between px-5 lg:px-5 lg:py-40'>
         <About/>
-        <div className='flex flex-col gap-20'>
-        <RecentNews/>
+        <div className='flex flex-col gap-20 lg:gap-5  overflow  lg:w-1/3'>
+        {/* <RecentNews/> */}
         <RecentBlogs/>
         </div>
 

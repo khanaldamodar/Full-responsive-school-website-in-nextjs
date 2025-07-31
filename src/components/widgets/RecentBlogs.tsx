@@ -58,9 +58,9 @@ const RecentBlogs = () => {
           <Link
             key={item.id}
             href={`/events/${generateSlug(item.title)}`}
-            className="block hover:bg-gray-50 rounded"
+            className="block hover:bg-gray-50 rounded "
           >
-            <div className="flex gap-4 py-3">
+            <div className="flex gap-4 py-3 ">
               <div className="h-16 w-16 flex-shrink-0 rounded overflow-hidden">
                 <Image
                   src={`${imageUrl}${item.image}`}
@@ -74,11 +74,6 @@ const RecentBlogs = () => {
                 <h3 className="font-semibold text-sm font-poppins leading-snug">
                   {item.title}
                 </h3>
-                {item.description && (
-                  <p className="text-xs text-gray-700 truncate font-poppins">
-                    {item.description}
-                  </p>
-                )}
                 <p className="text-xs text-gray-500 mt-1 font-poppins">
                   {new Date(item.event_date).toDateString()}
                 </p>

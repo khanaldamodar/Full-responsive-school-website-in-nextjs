@@ -33,7 +33,7 @@ const OurFacilities = () => {
         {/* Heading */}
         <Heading title="Our Facilities" icon={<FaGoogleScholar />} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 xl:px-10">
           {facilities.map((facility, index) => (
             <div
               key={index}
