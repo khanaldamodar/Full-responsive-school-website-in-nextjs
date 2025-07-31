@@ -1,16 +1,19 @@
-"use client";
-import React, { useEffect, useState } from "react";
+"use client"
+// components/Navigations/Navbar.tsx
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
-const Navbar = () => {
+interface NavbarProps {
+  logoUrl: string | null;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ logoUrl }) => {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [hoveredMenu, setHoveredMenu] = useState<number | null>(null);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   const menuItems = [
     { name: "Home", path: "/" },
@@ -23,33 +26,8 @@ const Navbar = () => {
     { name: "Contact", path: "/contact" },
   ];
 
-  const handleContactButton = () => {
-    router.push("/admission");
-  };
-
-  const handleMenuClick = (item: any) => {
-    if (!item.subMenus) {
-      router.push(item.path);
-    }
-  };
-
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-        const res = await fetch(`${apiUrl}school-information/3`);
-        const data = await res.json();
-        if (data?.data?.logo) {
-          setLogoUrl(`${baseUrl}public/${data.data.logo}`);
-        }
-      } catch (err) {
-        console.error("Failed to fetch logo:", err);
-      }
-    };
-
-    fetchLogo();
-  }, []);
+  const handleContactButton = () => router.push("/admission");
+  const handleMenuClick = (item: any) => router.push(item.path);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,18 +58,14 @@ const Navbar = () => {
               unoptimized
             />
           ) : (
-            <span className="text-gray-400 text-sm font-poppins">Loading...</span>
+            <span className="text-gray-400 text-sm font-poppins">Logo</span>
           )}
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden lg:flex items-center gap-8 uppercase  font-medium relative">
+        <ul className="hidden lg:flex items-center gap-8 uppercase font-medium relative">
           {menuItems.map((item, index) => (
-            <li
-              key={index}
-              onMouseEnter={() => item.subMenus && setHoveredMenu(index)}
-              onMouseLeave={() => setHoveredMenu(null)}
-            >
+            <li key={index}>
               <div
                 onClick={() => handleMenuClick(item)}
                 className="cursor-pointer hover:text-blue-500 transition-colors duration-200 py-2"
@@ -128,10 +102,8 @@ const Navbar = () => {
               <li key={index}>
                 <div
                   onClick={() => {
-                    if (!item.subMenus) {
-                      setMenuOpen(false);
-                      router.push(item.path);
-                    }
+                    setMenuOpen(false);
+                    router.push(item.path);
                   }}
                   className="cursor-pointer hover:text-blue-500 transition-colors duration-200"
                 >
@@ -147,7 +119,7 @@ const Navbar = () => {
                   handleContactButton();
                 }}
               >
-                Addmission Open
+                Admission Open
               </button>
             </li>
           </ul>
