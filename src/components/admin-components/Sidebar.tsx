@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Cookies from "js-cookie";
 
-const adminEmail = "admin@school.edu.np";
+// const adminEmail = "admin@school.edu.np";
 
 const menuItems = [
   { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon },
@@ -63,7 +63,7 @@ const menuItems = [
     name: "Users",
     href: "/admin/register",
     icon: BookOpenIcon,
-    subItems: [{ name: "Add Users", href: "/admin/users/add" }],
+    subItems: [{ name: "Add Users", href: "/admin/register/add" }],
   },
   { name: "Settings", href: "/admin/settings", icon: Cog6ToothIcon },
 ];
@@ -71,6 +71,7 @@ const menuItems = [
 export default function Sidebar() {
   const route = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminEmail, setAdminEmail] = useState("Loading...");
   const [openSubmenus, setOpenSubmenus] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -92,6 +93,31 @@ export default function Sidebar() {
       setSidebarOpen(false);
     }
   };
+
+  useEffect(()=> {
+
+    const getchUserDetails = async () => {
+      try {
+        const token = Cookies.get("token");
+        if (!token) {
+          route.replace("/login");
+          return;
+        }
+        // Fetch user details if needed
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}user`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setAdminEmail(data.email);
+      } catch (error) {
+        console.error("Failed to fetch user details", error);
+      }
+    }
+    getchUserDetails();
+
+  },[])
 
   return (
     <>

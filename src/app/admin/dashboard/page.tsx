@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 import {
   UserGroupIcon,
   BookOpenIcon,
@@ -23,6 +25,8 @@ interface DashboardStats {
 }
 
 export default function AdminDashboard() {
+  const route = useRouter();
+  const [adminName, setAdminName] = useState("Loading...");
   const [stats, setStats] = useState<DashboardStats | null>(null);
 
   useEffect(() => {
@@ -46,6 +50,30 @@ export default function AdminDashboard() {
     };
 
     fetchDashboard();
+  }, []);
+
+  useEffect(() => {
+
+    const getAdminName = async () => {
+      try {
+        const token = Cookies.get("token");
+        if (!token) {
+          route.replace("/login");
+          return;
+        }
+        const response = await axios(`${process.env.NEXT_PUBLIC_API_URL}user`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+    
+        setAdminName(response.data.name);
+      } catch (error) {
+        console.error("Failed to fetch user details", error);
+      }
+    }
+    getAdminName();
+
   }, []);
 
   if (!stats) return <Loader />;
@@ -86,7 +114,7 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Welcome Section */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Welcome, Admin</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Welcome, {adminName}</h1>
           <p className="text-gray-600">
             Manage your school's content, events, and staff here.
           </p>
