@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 
 export default function About() {
@@ -10,23 +10,32 @@ export default function About() {
 
   const schoolId = 2 // or fetch from config if dynamic
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const cacheRef = useRef<Record<string, string>>({})
 
-        const res = await axios.get(`${apiUrl}school-information/${schoolId}`)
-        setDescription(res.data?.data.description || '')
-        
-      } catch (err) {
-        setError('Failed to load school information.')
-      } finally {
-        setLoading(false)
-      }
+useEffect(() => {
+  const fetchData = async () => {
+    if (cacheRef.current[schoolId]) {
+      setDescription(cacheRef.current[schoolId])
+      setLoading(false)
+      return
     }
 
-    fetchData()
-  }, [schoolId])
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await axios.get(`${apiUrl}school-information/${schoolId}`)
+      const desc = res.data?.data.description || ''
+      cacheRef.current[schoolId] = desc
+      setDescription(desc)
+    } catch (err) {
+      setError('Failed to load school information.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchData()
+}, [schoolId])
+
 
   return (
     <div className="font-poppins">

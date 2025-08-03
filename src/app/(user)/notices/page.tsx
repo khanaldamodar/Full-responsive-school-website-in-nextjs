@@ -79,7 +79,7 @@ const NoticesPage: React.FC = () => {
                 title={notice.title}
                 date={dayjs(notice.notice_date).format("YYYY-MM-DD")}
                 description={notice.description}
-                image={notice.image ? `${imageUrl}${notice.image}` : undefined}
+                image={notice.image ? `${imageUrl}${notice.image}` : "/images/logo.jpg"}
               />
             ))
           ) : (
