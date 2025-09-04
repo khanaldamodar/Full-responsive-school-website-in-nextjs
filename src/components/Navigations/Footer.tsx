@@ -5,19 +5,40 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 
 type SchoolInfo = {
-  name:string;
+  name: string;
   address: string;
   phone: string;
   email: string;
 };
 
 const Footer = () => {
+
+    const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+
   const [schoolInfo, setSchoolInfo] = useState<SchoolInfo>({
     name: "",
     address: "",
     phone: "",
     email: "",
   });
+
+   const handleSubscribe = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      setError("Email is required.");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    setError(""); // Clear error if valid
+    alert("This Feature is Coming Soon!!");
+  };
 
   useEffect(() => {
     const fetchSchoolInfo = async () => {
@@ -28,7 +49,7 @@ const Footer = () => {
         const data = await response.json();
 
         if (data.status && data.data) {
-          const {name, address, phone, email } = data.data;
+          const { name, address, phone, email } = data.data;
           setSchoolInfo({ name, address, phone, email });
         }
       } catch (error) {
@@ -38,6 +59,8 @@ const Footer = () => {
 
     fetchSchoolInfo();
   }, []);
+
+
 
   return (
     <footer className="bg-[#0949A3] text-white font-poppins pt-10 pb-6 px-6 md:px-16">
@@ -57,11 +80,31 @@ const Footer = () => {
           <div>
             <h1 className="text-xl font-semibold">Quick Links</h1>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a href="#" className="hover:underline">Home</a></li>
-              <li><a href="#" className="hover:underline">Courses</a></li>
-              <li><a href="#" className="hover:underline">Admissions</a></li>
-              <li><a href="#" className="hover:underline">Gallery</a></li>
-              <li><a href="#" className="hover:underline">Contact Us</a></li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Courses
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Admissions
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Gallery
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:underline">
+                  Contact Us
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -92,10 +135,17 @@ const Footer = () => {
             </p>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="w-full px-3 py-2 rounded text-white text-sm bg-[#0949A3] border border-white/50 placeholder-white"
+              required
             />
-            <button className="mt-3 w-full bg-white text-[#0949A3] font-semibold py-2 rounded hover:bg-gray-200 transition cursor-pointer">
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+            <button
+              className="mt-3 w-full bg-white text-[#0949A3] font-semibold py-2 rounded hover:bg-gray-200 transition cursor-pointer"
+              onClick={() => handleSubscribe()}
+            >
               Subscribe
             </button>
           </div>
@@ -103,7 +153,11 @@ const Footer = () => {
 
         {/* Bottom Line */}
         <div className="text-center text-sm border-t border-white/30 pt-4">
-          &copy; {new Date().getFullYear()} {schoolInfo.name} All rights reserved. - Designed By <Link className="text-green-500" href={"/"}>ShaktaTechnology</Link>
+          &copy; {new Date().getFullYear()} {schoolInfo.name} All rights
+          reserved. - Designed By{" "}
+          <Link className="text-green-500" href={"/"}>
+            ShaktaTechnology
+          </Link>
         </div>
       </div>
     </footer>
