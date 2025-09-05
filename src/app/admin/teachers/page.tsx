@@ -72,33 +72,33 @@ export default function TeachersPage() {
       )
   );
 
-  const handleDelete = async (id: number) => {
-    const confirmDelete = confirm(
-      "Are you sure you want to delete this teacher?"
-    );
+ const handleDelete = async (id: number) => {
+  const confirmDelete = confirm(
+    "Are you sure you want to delete this teacher?"
+  );
+  if (!confirmDelete) return;
 
-    if (!confirmDelete) return;
+  try {
+    const token = Cookies.get("token");
 
-    try {
-      const token = Cookies.get("token");
+    await axios.delete(`${apiUrl}teachers/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      await axios.delete(`${apiUrl}teachers/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // Remove deleted teacher from local state
-      if (data) {
-        const updated = data.data.filter((t) => t.id !== id);
-        setSelectedItems((prev) => prev.filter((item) => item !== id));
-        setLocalData({ ...data, data: updated }); // Update local state
-      }
-    } catch (err) {
-      console.error("Failed to delete teacher:", err);
-      alert("Failed to delete teacher. Please try again.");
+    // Remove deleted teacher from local state
+    if (localData) {
+      const updated = localData.filter((t) => t.id !== id); // ✅ use localData directly
+      setSelectedItems((prev) => prev.filter((item) => item !== id));
+      setLocalData(updated); // ✅ set array, not object
     }
-  };
+  
+  } catch (err) {
+    console.error("Failed to delete teacher:", err);
+    alert("Failed to delete teacher. Please try again.");
+  }
+};
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen font-poppins">
@@ -145,7 +145,8 @@ export default function TeachersPage() {
               Loading teachers...
             </div>
           ) : error ? (
-            <div className="p-6 text-center text-red-500">Error: {error}</div>
+            // <div className="p-6 text-center text-red-500">Error: {error}</div>
+            <div className="p-6 text-center text-red-500">There is no any Teacher Added Yet</div>
           ) : filteredData && filteredData.length > 0 ? (
             <table className="min-w-full text-sm text-left">
               <thead className="bg-blue-600 text-white">
