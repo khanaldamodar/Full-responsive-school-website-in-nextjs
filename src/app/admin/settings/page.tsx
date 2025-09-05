@@ -82,6 +82,7 @@ export default function SettingsPage() {
   form.append('email', formData.email);
   form.append('description', formData.about);
   form.append('school_start_time', formData.openingTime);
+  form.append('_method', 'PUT'); // For Laravel PUT method spoofing
 
   if (logo) {
     form.append('logo', logo); // 👈 append logo file
